@@ -1,860 +1,843 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2685.5">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px 'Courier New'; color: #8486ff; -webkit-text-stroke: #8486ff}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000; min-height: 14.0px}
-    span.s1 {font-kerning: none}
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VeloGo 3-City Launch Hub</title>
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Tailwind Configuration for custom animations/colors -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            'slide-up': 'slideUp 0.3s ease-out forwards',
+            'scale-up': 'scaleUp 0.2s ease-out forwards',
+            'fade-in': 'fadeIn 0.3s ease-out forwards',
+          },
+          keyframes: {
+            slideUp: { '0%': { transform: 'translateY(100%)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+            scaleUp: { '0%': { transform: 'scale(0.95)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } },
+            fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons via CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body>
-<p class="p1"><span class="s1">import React, { useState, useEffect, useRef } from 'react';</span></p>
-<p class="p1"><span class="s1">import { </span></p>
-<p class="p1"><span class="s1">  Activity, CheckCircle2, Clock, Settings, AlertCircle, Terminal, </span></p>
-<p class="p1"><span class="s1">  ArrowRight, Send, Layers, Compass, Database, Cpu, FileText, </span></p>
-<p class="p1"><span class="s1">  Sparkles, Globe, RefreshCw, Sliders, Code, Users, MapPin, </span></p>
-<p class="p1"><span class="s1">  HelpCircle, ChevronDown, ChevronUp, Copy, ExternalLink, Play, Check</span></p>
-<p class="p1"><span class="s1">} from 'lucide-react';</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">// Live Gemini API configuration</span></p>
-<p class="p1"><span class="s1">const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent";</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">export default function App() {</span></p>
-<p class="p1"><span class="s1">  // Theme and Navigation State</span></p>
-<p class="p1"><span class="s1">  const [activeTab, setActiveTab] = useState('tracker'); </span></p>
-<p class="p1"><span class="s1">  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);</span></p>
-<p class="p1"><span class="s1">  const [apiKey, setApiKey] = useState('');</span></p>
-<p class="p1"><span class="s1">  </span></p>
-<p class="p1"><span class="s1">  // Tasks State</span></p>
-<p class="p1"><span class="s1">  const [tasks, setTasks] = useState([</span></p>
-<p class="p1"><span class="s1">    { id: 1, week: 'Weeks 1-2', category: 'Strategy', title: 'Initialize Wunder Staging Environment', owner: 'Wunder CSM', status: 'completed', description: 'Deploy VeloGo sandbox instances and map administrative users.' },</span></p>
-<p class="p1"><span class="s1">    { id: 2, week: 'Weeks 1-2', category: 'Hardware', title: 'Collect Yadea IoT Specifications &amp; IMEI lists', owner: 'Client Team', status: 'completed', description: 'Gather SIM card details and IoT telemetry protocol specs for 800 e-bikes.' },</span></p>
-<p class="p1"><span class="s1">    { id: 3, week: 'Weeks 1-2', category: 'Design', title: 'Submit White-Label App Design Assets', owner: 'Client Team', status: 'in-progress', description: 'Upload customized brand color hex-codes, logos, App Store/Google Play icon templates.' },</span></p>
-<p class="p1"><span class="s1">    { id: 4, week: 'Weeks 3-4', category: 'Integrations', title: 'Stripe Gateway &amp; Merchant Onboarding', owner: 'Client Team', status: 'pending', description: 'Configure dynamic local processing structures for EUR and DKK transactions.' },</span></p>
-<p class="p1"><span class="s1">    { id: 5, week: 'Weeks 3-4', category: 'Regulatory', title: 'Establish GBFS &amp; MDS API Endpoints', owner: 'Wunder CSM', status: 'pending', description: 'Build compliant feeds required for municipal permits in Hamburg, Rotterdam, and Copenhagen.' },</span></p>
-<p class="p1"><span class="s1">    { id: 6, week: 'Weeks 5-6', category: 'Regulatory', title: 'Load City-specific Geofence Databases', owner: 'Wunder CSM', status: 'pending', description: 'Inject mandatory parking clusters, slow-riding corridors, and excluded zones.' },</span></p>
-<p class="p1"><span class="s1">    { id: 7, week: 'Weeks 5-6', category: 'Localization', title: 'App Copy Localization (German, Dutch, Danish)', owner: 'Client Team', status: 'pending', description: 'Translate system copy, push notifications, and ride-end legal notices.' },</span></p>
-<p class="p1"><span class="s1">    { id: 8, week: 'Weeks 7-8', category: 'Hardware', title: 'OTA Firmware Validation &amp; Remote Unlock Tests', owner: 'Joint Team', status: 'pending', description: 'Conduct over-the-air test loops to ensure reliable wake/sleep/lock states.' },</span></p>
-<p class="p1"><span class="s1">    { id: 9, week: 'Weeks 9-10', category: 'Ops', title: 'Staff Training on Wunder Fleet Operator App', owner: 'Wunder CSM', status: 'pending', description: 'Train local field mechanics and re-balancers on battery swap procedures.' },</span></p>
-<p class="p1"><span class="s1">    { id: 10, week: 'Weeks 9-10', category: 'Launch', title: 'Rotterdam Soft Launch (100 e-Bikes)', owner: 'Client Team', status: 'pending', description: 'Soft deploy first batch of vehicles to test the telemetry, unlock times, and localized geofencing.' }</span></p>
-<p class="p1"><span class="s1">  ]);</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  const [expandedTask, setExpandedTask] = useState(null);</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  // n8n Studio Simulator State</span></p>
-<p class="p1"><span class="s1">  const [selectedScenario, setSelectedScenario] = useState('policy');</span></p>
-<p class="p1"><span class="s1">  const [isSimulating, setIsSimulating] = useState(false);</span></p>
-<p class="p1"><span class="s1">  const [simStep, setSimStep] = useState(0); </span></p>
-<p class="p1"><span class="s1">  const [simLogs, setSimLogs] = useState([]);</span></p>
-<p class="p1"><span class="s1">  const [simResult, setSimResult] = useState(null);</span></p>
-<p class="p1"><span class="s1">  const [inputPayload, setInputPayload] = useState('');</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  // Pre-configured Scenario templates</span></p>
-<p class="p1"><span class="s1">  const scenarios = {</span></p>
-<p class="p1"><span class="s1">    policy: {</span></p>
-<p class="p1"><span class="s1">      title: "Municipal Policy Geofencer",</span></p>
-<p class="p1"><span class="s1">      description: "Automate speed limits and slow-zones by feeding raw municipal legal PDFs directly to Gemini, bypassing manual GPS plotting.",</span></p>
-<p class="p1"><span class="s1">      triggerLabel: "Incoming Council PDF Webhook",</span></p>
-<p class="p1"><span class="s1">      geminiLabel: "Extract Coordinates &amp; GeoJSON Schema",</span></p>
-<p class="p1"><span class="s1">      actionLabel: "PUT /v1/geofence (Wunder API)",</span></p>
-<p class="p1"><span class="s1">      rawInput: `MEMORANDUM: City of Rotterdam Urban Planning Dept.\nEffective immediately, to ensure pedestrian safety around the South-East entrance of Rotterdam Central Station, a restricted speed threshold of fifteen kilometers per hour (15 km/h) is mandated within the corridor bounded by coordinates: NW: 51.9244, 4.4777; NE: 51.9252, 4.4791; SE: 51.9238, 4.4812; SW: 51.9230, 4.4795. Standard operational alerts must warn incoming riders.`,</span></p>
-<p class="p1"><span class="s1">      result: {</span></p>
-<p class="p1"><span class="s1">        zone_name: "Rotterdam Central Corridor - Pedestrian Safety Zone",</span></p>
-<p class="p1"><span class="s1">        zone_type: "restricted_speed",</span></p>
-<p class="p1"><span class="s1">        max_velocity_kmh: 15,</span></p>
-<p class="p1"><span class="s1">        polygon: [</span></p>
-<p class="p1"><span class="s1">          { lat: 51.9244, lng: 4.4777 },</span></p>
-<p class="p1"><span class="s1">          { lat: 51.9252, lng: 4.4791 },</span></p>
-<p class="p1"><span class="s1">          { lat: 51.9238, lng: 4.4812 },</span></p>
-<p class="p1"><span class="s1">          { lat: 51.9230, lng: 4.4795 }</span></p>
-<p class="p1"><span class="s1">        ],</span></p>
-<p class="p1"><span class="s1">        push_notification: {</span></p>
-<p class="p1"><span class="s1">          title_nl: "Snelheidsbeperkte zone!",</span></p>
-<p class="p1"><span class="s1">          message_nl: "Let op! U rijdt een voetgangersveiligheidszone binnen. Maximale snelheid is 15 km/u."</span></p>
-<p class="p1"><span class="s1">        },</span></p>
-<p class="p1"><span class="s1">        compliance_tag: "Rotterdam-Stb-2026"</span></p>
-<p class="p1"><span class="s1">      }</span></p>
-<p class="p1"><span class="s1">    },</span></p>
-<p class="p1"><span class="s1">    localization: {</span></p>
-<p class="p1"><span class="s1">      title: "Contextual Multi-City Localizer",</span></p>
-<p class="p1"><span class="s1">      description: "Instantly translate user-facing copy into German, Dutch, and Danish. Ensures micromobility terms like 'battery swap' or 'lock-to bar' translate correctly, not literally.",</span></p>
-<p class="p1"><span class="s1">      triggerLabel: "Google Sheets Copy Update Webhook",</span></p>
-<p class="p1"><span class="s1">      geminiLabel: "Contextual Mobility Translator",</span></p>
-<p class="p1"><span class="s1">      actionLabel: "POST /v1/localization/batch",</span></p>
-<p class="p1"><span class="s1">      rawInput: `[New App Version Notification Copy]\nTitle: "Out of Bounds!"\nBody: "Your e-bike is parked outside the mandatory parking zone. Please return it to a highlighted blue bay to avoid a €10 convenience fine, or lock it securely to the closest municipal rack."`,</span></p>
-<p class="p1"><span class="s1">      result: {</span></p>
-<p class="p1"><span class="s1">        de: {</span></p>
-<p class="p1"><span class="s1">          title: "Außerhalb der Zone!",</span></p>
-<p class="p1"><span class="s1">          body: "Dein E-Bike ist außerhalb der vorgeschriebenen Parkzone abgestellt. Bitte stelle es in einer blau markierten Parkbucht ab, um eine Servicegebühr von 10 € zu vermeiden, oder schließe es sicher an den nächsten Fahrradbügel an."</span></p>
-<p class="p1"><span class="s1">        },</span></p>
-<p class="p1"><span class="s1">        nl: {</span></p>
-<p class="p1"><span class="s1">          title: "Buiten de zone!",</span></p>
-<p class="p1"><span class="s1">          body: "Je e-bike staat geparkeerd buiten de verplichte parkeerzone. Parkeer de fiets in een blauw gemarkeerd parkeervak om een toeslag van €10 te voorkomen, of zet hem veilig op slot aan de dichtstbijzijnde gemeentelijke fietsbeugel."</span></p>
-<p class="p1"><span class="s1">        },</span></p>
-<p class="p1"><span class="s1">        da: {</span></p>
-<p class="p1"><span class="s1">          title: "Uden for parkeringszone!",</span></p>
-<p class="p1"><span class="s1">          body: "Din e-bike er parkeret uden for den obligatoriske parkeringszone. Returner den til et markeret blåt parkeringsfelt for at undgå et gebyr på 10 €, eller lås den sikkert til det nærmeste kommunale cykelstativ."</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1">      }</span></p>
-<p class="p1"><span class="s1">    },</span></p>
-<p class="p1"><span class="s1">    telemetry: {</span></p>
-<p class="p1"><span class="s1">      title: "IoT Anomaly Diagnostics Coordinator",</span></p>
-<p class="p1"><span class="s1">      description: "Scans low-signal bike diagnostics, diagnoses root issues via Gemini (e.g. GPS shield vs dead cell), and auto-assigns local repair task sheets.",</span></p>
-<p class="p1"><span class="s1">      triggerLabel: "Wunder Raw Telemetry Log Hook",</span></p>
-<p class="p1"><span class="s1">      geminiLabel: "Gemini IoT Diagnostic Engine",</span></p>
-<p class="p1"><span class="s1">      actionLabel: "POST /v1/ops/dispatch/ticket",</span></p>
-<p class="p1"><span class="s1">      rawInput: `DEVICE_ALERT: Vehicle ID HAM-902\n- Status: OFFLINE for 18.2 Hours\n- Last Coordinates: Hamburg Central Station (Südausgang)\n- Battery State: 78% (Voltage stable at 36.4V)\n- Signal Strength: RSSI -112 (Critical Drop)\n- Lock Status: Locked manually via physical cable.\n- Weather: Heavy downpour (Rainfall rate 12mm/h).\n- Local Geo-Data: Station Renovation underway, extensive steel scaffolding erected within 5 meters of coordinates.`,</span></p>
-<p class="p1"><span class="s1">      result: {</span></p>
-<p class="p1"><span class="s1">        diagnostics: {</span></p>
-<p class="p1"><span class="s1">          vehicle_id: "HAM-902",</span></p>
-<p class="p1"><span class="s1">          apparent_failure: "GPS Signal Blockage (RSSI Critical)",</span></p>
-<p class="p1"><span class="s1">          risk_of_theft: "Low (Physical lock engaged, battery voltage is stable)",</span></p>
-<p class="p1"><span class="s1">          root_cause_analysis: "High likelihood of antenna shielding caused by local steel construction scaffolding combined with signal attenuation from heavy rainfall. The vehicle state is safe but inaccessible to the app.",</span></p>
-<p class="p1"><span class="s1">          recommended_action: "Send local mechanic to relocate the e-bike 15 meters away from the scaffold corridor to re-establish cellular heartbeat."</span></p>
-<p class="p1"><span class="s1">        },</span></p>
-<p class="p1"><span class="s1">        ops_ticket: {</span></p>
-<p class="p1"><span class="s1">          priority: "Medium",</span></p>
-<p class="p1"><span class="s1">          assigned_team: "Hamburg-Central-Ops",</span></p>
-<p class="p1"><span class="s1">          mechanic_guide_de: "HINWEIS: Fahrzeug offline wegen Baugerüst. Bitte das Rad 15m weiter südlich schieben, bis die LED grün blinkt."</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1">      }</span></p>
-<p class="p1"><span class="s1">    }</span></p>
-<p class="p1"><span class="s1">  };</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  useEffect(() =&gt; {</span></p>
-<p class="p1"><span class="s1">    setInputPayload(scenarios[selectedScenario].rawInput);</span></p>
-<p class="p1"><span class="s1">    setSimResult(null);</span></p>
-<p class="p1"><span class="s1">    setSimLogs([]);</span></p>
-<p class="p1"><span class="s1">    setSimStep(0);</span></p>
-<p class="p1"><span class="s1">  }, [selectedScenario]);</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  const [chatMessages, setChatMessages] = useState([</span></p>
-<p class="p1"><span class="s1">    { sender: 'assistant', text: "Hello! I am your Wunder Launch Onboarding Assistant, backed by Gemini. I can assist you with setting up your 800 e-bikes, configuring GBFS/MDS feeds, localizing copy, or structuring your n8n workflow integrations. Ask me anything!" }</span></p>
-<p class="p1"><span class="s1">  ]);</span></p>
-<p class="p1"><span class="s1">  const [chatInput, setChatInput] = useState('');</span></p>
-<p class="p1"><span class="s1">  const [isChatLoading, setIsChatLoading] = useState(false);</span></p>
-<p class="p1"><span class="s1">  const [toastMessage, setToastMessage] = useState(null);</span></p>
-<p class="p1"><span class="s1">  const chatEndRef = useRef(null);</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  useEffect(() =&gt; {</span></p>
-<p class="p1"><span class="s1">    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });</span></p>
-<p class="p1"><span class="s1">  }, [chatMessages]);</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  const triggerToast = (msg) =&gt; {</span></p>
-<p class="p1"><span class="s1">    setToastMessage(msg);</span></p>
-<p class="p1"><span class="s1">    setTimeout(() =&gt; setToastMessage(null), 3000);</span></p>
-<p class="p1"><span class="s1">  };</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  const copyToClipboard = (text) =&gt; {</span></p>
-<p class="p1"><span class="s1">    const textArea = document.createElement("textarea");</span></p>
-<p class="p1"><span class="s1">    textArea.value = text;</span></p>
-<p class="p1"><span class="s1">    document.body.appendChild(textArea);</span></p>
-<p class="p1"><span class="s1">    textArea.select();</span></p>
-<p class="p1"><span class="s1">    try {</span></p>
-<p class="p1"><span class="s1">      document.execCommand('copy');</span></p>
-<p class="p1"><span class="s1">      triggerToast("Copied to clipboard!");</span></p>
-<p class="p1"><span class="s1">    } catch (err) {</span></p>
-<p class="p1"><span class="s1">      triggerToast("Failed to copy text.");</span></p>
-<p class="p1"><span class="s1">    }</span></p>
-<p class="p1"><span class="s1">    document.body.removeChild(textArea);</span></p>
-<p class="p1"><span class="s1">  };</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  // Status toggle handler</span></p>
-<p class="p1"><span class="s1">  const handleToggleTaskStatus = (id) =&gt; {</span></p>
-<p class="p1"><span class="s1">    setTasks(tasks.map(t =&gt; {</span></p>
-<p class="p1"><span class="s1">      if (t.id === id) {</span></p>
-<p class="p1"><span class="s1">        const nextStatus = t.status === 'completed' ? 'in-progress' : t.status === 'in-progress' ? 'pending' : 'completed';</span></p>
-<p class="p1"><span class="s1">        return { ...t, status: nextStatus };</span></p>
-<p class="p1"><span class="s1">      }</span></p>
-<p class="p1"><span class="s1">      return t;</span></p>
-<p class="p1"><span class="s1">    }));</span></p>
-<p class="p1"><span class="s1">    triggerToast("Task status updated!");</span></p>
-<p class="p1"><span class="s1">  };</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  // Status badge styling helper</span></p>
-<p class="p1"><span class="s1">  const getStatusColor = (status) =&gt; {</span></p>
-<p class="p1"><span class="s1">    switch (status) {</span></p>
-<p class="p1"><span class="s1">      case 'completed': return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';</span></p>
-<p class="p1"><span class="s1">      case 'in-progress': return 'bg-amber-500/10 text-amber-500 border-amber-500/20';</span></p>
-<p class="p1"><span class="s1">      default: return 'bg-slate-500/10 text-slate-400 border-slate-500/20';</span></p>
-<p class="p1"><span class="s1">    }</span></p>
-<p class="p1"><span class="s1">  };</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  const generateGeminiContent = async (prompt, systemInstruction) =&gt; {</span></p>
-<p class="p1"><span class="s1">    const payload = {</span></p>
-<p class="p1"><span class="s1">      contents: [{ parts: [{ text: prompt }] }],</span></p>
-<p class="p1"><span class="s1">      systemInstruction: { parts: [{ text: systemInstruction }] }</span></p>
-<p class="p1"><span class="s1">    };</span></p>
-<p class="p1"><span class="s1">    const targetKey = apiKey || "";</span></p>
-<p class="p1"><span class="s1">    const url = `${API_URL}?key=${targetKey}`;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">    const response = await fetch(url, {</span></p>
-<p class="p1"><span class="s1">      method: 'POST',</span></p>
-<p class="p1"><span class="s1">      headers: { 'Content-Type': 'application/json' },</span></p>
-<p class="p1"><span class="s1">      body: JSON.stringify(payload)</span></p>
-<p class="p1"><span class="s1">    });</span></p>
-<p class="p1"><span class="s1">    if (!response.ok) {</span></p>
-<p class="p1"><span class="s1">      throw new Error(`API error ${response.status}`);</span></p>
-<p class="p1"><span class="s1">    }</span></p>
-<p class="p1"><span class="s1">    return await response.json();</span></p>
-<p class="p1"><span class="s1">  };</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  const runWorkflowSimulation = async () =&gt; {</span></p>
-<p class="p1"><span class="s1">    setIsSimulating(true);</span></p>
-<p class="p1"><span class="s1">    setSimStep(1);</span></p>
-<p class="p1"><span class="s1">    setSimLogs([]);</span></p>
-<p class="p1"><span class="s1">    setSimResult(null);</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">    const logList = [];</span></p>
-<p class="p1"><span class="s1">    const pushLog = (text, delay) =&gt; {</span></p>
-<p class="p1"><span class="s1">      return new Promise((resolve) =&gt; {</span></p>
-<p class="p1"><span class="s1">        setTimeout(() =&gt; {</span></p>
-<p class="p1"><span class="s1">          logList.push({ timestamp: new Date().toLocaleTimeString(), text });</span></p>
-<p class="p1"><span class="s1">          setSimLogs([...logList]);</span></p>
-<p class="p1"><span class="s1">          resolve();</span></p>
-<p class="p1"><span class="s1">        }, delay);</span></p>
-<p class="p1"><span class="s1">      });</span></p>
-<p class="p1"><span class="s1">    };</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">    try {</span></p>
-<p class="p1"><span class="s1">      await pushLog(`⚡ [Node 1: Webhook] Event triggered by ${scenarios[selectedScenario].triggerLabel}.`, 400);</span></p>
-<p class="p1"><span class="s1">      await pushLog("📥 [Webhook] Received raw input data successfully. Sending payload to Gemini node.", 500);</span></p>
-<p class="p1"><span class="s1">      </span></p>
-<p class="p1"><span class="s1">      setSimStep(2);</span></p>
-<p class="p1"><span class="s1">      await pushLog(`🧠 [Node 2: Gemini] Prompting Gemini model to parse input using structured schema.`, 600);</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">      let finalResult = scenarios[selectedScenario].result;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">      if (apiKey) {</span></p>
-<p class="p1"><span class="s1">        await pushLog("📡 [Gemini] Contacting live Gemini-2.5-Flash model...", 300);</span></p>
-<p class="p1"><span class="s1">        const prompt = `Input data to parse: "${inputPayload}". Format output as clean JSON only, aligning exactly with the context of this scenario: ${scenarios[selectedScenario].title}.`;</span></p>
-<p class="p1"><span class="s1">        const systemPrompt = "You are a professional n8n automation node. Convert input text into clean structural JSON maps for integration pipelines. Output only valid JSON with no backticks or markdown wrappers.";</span></p>
-<p class="p1"><span class="s1">        const apiResponse = await generateGeminiContent(prompt, systemPrompt);</span></p>
-<p class="p1"><span class="s1">        const textResponse = apiResponse.candidates?.[0]?.content?.parts?.[0]?.text || "{}";</span></p>
-<p class="p1"><span class="s1">        try {</span></p>
-<p class="p1"><span class="s1">          finalResult = JSON.parse(textResponse.replace(/```json|```/g, ''));</span></p>
-<p class="p1"><span class="s1">          await pushLog("🟢 [Gemini] Successfully generated live parsed JSON response.", 500);</span></p>
-<p class="p1"><span class="s1">        } catch (e) {</span></p>
-<p class="p1"><span class="s1">          await pushLog("⚠️ [Gemini] Generated text was not perfect JSON, using fallback calibrated schema.", 400);</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1">      } else {</span></p>
-<p class="p1"><span class="s1">        await pushLog("⚙️ [Gemini] Analyzing content semantics...", 1000);</span></p>
-<p class="p1"><span class="s1">        await pushLog("⚙️ [Gemini] Formatting raw terms to structured operational JSON...", 1000);</span></p>
-<p class="p1"><span class="s1">      }</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">      setSimStep(3);</span></p>
-<p class="p1"><span class="s1">      await pushLog(`🛰️ [Node 3: Wunder API] Syncing generated variables to Wunder REST endpoint.`, 600);</span></p>
-<p class="p1"><span class="s1">      </span></p>
-<p class="p1"><span class="s1">      setSimStep(4);</span></p>
-<p class="p1"><span class="s1">      setSimResult(finalResult);</span></p>
-<p class="p1"><span class="s1">      await pushLog("🎉 [Workflow Status: Success] All nodes executed successfully. Wunder database updated.", 400);</span></p>
-<p class="p1"><span class="s1">      triggerToast("n8n Workflow Simulation Complete!");</span></p>
-<p class="p1"><span class="s1">    } catch (err) {</span></p>
-<p class="p1"><span class="s1">      console.error(err);</span></p>
-<p class="p1"><span class="s1">      await pushLog("❌ [Error] Integration workflow failed. Check API configuration or payload formats.", 200);</span></p>
-<p class="p1"><span class="s1">      setSimStep(0);</span></p>
-<p class="p1"><span class="s1">    } finally {</span></p>
-<p class="p1"><span class="s1">      setIsSimulating(false);</span></p>
-<p class="p1"><span class="s1">    }</span></p>
-<p class="p1"><span class="s1">  };</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  const handleSendChat = async (textToSend = chatInput) =&gt; {</span></p>
-<p class="p1"><span class="s1">    if (!textToSend.trim()) return;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">    const newMsgs = [...chatMessages, { sender: 'user', text: textToSend }];</span></p>
-<p class="p1"><span class="s1">    setChatMessages(newMsgs);</span></p>
-<p class="p1"><span class="s1">    setChatInput('');</span></p>
-<p class="p1"><span class="s1">    setIsChatLoading(true);</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">    const systemPrompt = `You are an expert Wunder Mobility Implementation Manager and AI Integration Consultant. You are onboarding a mid-sized European operator launching 800 e-bikes with Yadea IoT smart locks across 3 cities. Keep answers tactical.`;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">    try {</span></p>
-<p class="p1"><span class="s1">      if (!apiKey) {</span></p>
-<p class="p1"><span class="s1">        setTimeout(() =&gt; {</span></p>
-<p class="p1"><span class="s1">          setChatMessages([...newMsgs, { sender: 'assistant', text: `Please ensure your API Key is entered in the settings to generate dynamic responses. In the meantime, I recommend reviewing the App Store submission prerequisites!` }]);</span></p>
-<p class="p1"><span class="s1">          setIsChatLoading(false);</span></p>
-<p class="p1"><span class="s1">        }, 1200);</span></p>
-<p class="p1"><span class="s1">      } else {</span></p>
-<p class="p1"><span class="s1">        const result = await generateGeminiContent(textToSend, systemPrompt);</span></p>
-<p class="p1"><span class="s1">        const replyText = result.candidates?.[0]?.content?.parts?.[0]?.text || "No reply from AI.";</span></p>
-<p class="p1"><span class="s1">        setChatMessages([...newMsgs, { sender: 'assistant', text: replyText }]);</span></p>
-<p class="p1"><span class="s1">        setIsChatLoading(false);</span></p>
-<p class="p1"><span class="s1">      }</span></p>
-<p class="p1"><span class="s1">    } catch (err) {</span></p>
-<p class="p1"><span class="s1">      setChatMessages([...newMsgs, { sender: 'assistant', text: "Error connecting to Gemini API." }]);</span></p>
-<p class="p1"><span class="s1">      setIsChatLoading(false);</span></p>
-<p class="p1"><span class="s1">    }</span></p>
-<p class="p1"><span class="s1">  };</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">  return (</span></p>
-<p class="p1"><span class="s1">    &lt;div className="min-h-screen bg-[#0f172a] text-slate-100 font-sans flex flex-col selection:bg-indigo-500 selection:text-white"&gt;</span></p>
-<p class="p1"><span class="s1">      </span></p>
-<p class="p1"><span class="s1">      {/* Toast Notification */}</span></p>
-<p class="p1"><span class="s1">      {toastMessage &amp;&amp; (</span></p>
-<p class="p1"><span class="s1">        &lt;div className="fixed bottom-6 right-6 z-50 bg-indigo-600 border border-indigo-400/20 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-slide-up"&gt;</span></p>
-<p class="p1"><span class="s1">          &lt;Sparkles className="h-5 w-5 text-indigo-200 animate-pulse" /&gt;</span></p>
-<p class="p1"><span class="s1">          &lt;span className="font-medium text-sm"&gt;{toastMessage}&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">        &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">      )}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">      {/* API Key Modal */}</span></p>
-<p class="p1"><span class="s1">      {isApiKeyModalOpen &amp;&amp; (</span></p>
-<p class="p1"><span class="s1">        &lt;div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4"&gt;</span></p>
-<p class="p1"><span class="s1">          &lt;div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl animate-scale-up"&gt;</span></p>
-<p class="p1"><span class="s1">            &lt;div className="flex items-center gap-3 mb-4"&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;div className="p-2 bg-indigo-500/10 text-indigo-400 rounded-lg"&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;Settings className="h-6 w-6" /&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;h3 className="text-lg font-bold text-slate-100"&gt;Connect Your Real Gemini API&lt;/h3&gt;</span></p>
-<p class="p1"><span class="s1">            &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">            &lt;p className="text-xs text-slate-400 mb-4 leading-relaxed"&gt;</span></p>
-<p class="p1"><span class="s1">              Drop your Google Gemini API key below to switch the &lt;strong&gt;n8n Studio and Launch Advisor&lt;/strong&gt; from simulated mockups into a live playground executing live parsing and localization tasks in real-time.</span></p>
-<p class="p1"><span class="s1">            &lt;/p&gt;</span></p>
-<p class="p1"><span class="s1">            &lt;input </span></p>
-<p class="p1"><span class="s1">              type="password"</span></p>
-<p class="p1"><span class="s1">              placeholder="AIzaSy..."</span></p>
-<p class="p1"><span class="s1">              value={apiKey}</span></p>
-<p class="p1"><span class="s1">              onChange={(e) =&gt; setApiKey(e.target.value)}</span></p>
-<p class="p1"><span class="s1">              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-all text-sm mb-6 font-mono"</span></p>
-<p class="p1"><span class="s1">            /&gt;</span></p>
-<p class="p1"><span class="s1">            &lt;div className="flex justify-end gap-3"&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;button </span></p>
-<p class="p1"><span class="s1">                onClick={() =&gt; setIsApiKeyModalOpen(false)}</span></p>
-<p class="p1"><span class="s1">                className="px-4 py-2 text-xs text-slate-400 hover:text-slate-200 font-medium transition-colors"</span></p>
-<p class="p1"><span class="s1">              &gt;</span></p>
-<p class="p1"><span class="s1">                Close</span></p>
-<p class="p1"><span class="s1">              &lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;button </span></p>
-<p class="p1"><span class="s1">                onClick={() =&gt; {</span></p>
-<p class="p1"><span class="s1">                  setIsApiKeyModalOpen(false);</span></p>
-<p class="p1"><span class="s1">                  triggerToast(apiKey ? "Live Gemini API Connected!" : "Switched to demo mode.");</span></p>
-<p class="p1"><span class="s1">                }}</span></p>
-<p class="p1"><span class="s1">                className="bg-indigo-600 hover:bg-indigo-500 px-4 py-2 text-xs text-white font-medium rounded-xl transition-colors shadow-lg shadow-indigo-600/20"</span></p>
-<p class="p1"><span class="s1">              &gt;</span></p>
-<p class="p1"><span class="s1">                Save &amp; Connect</span></p>
-<p class="p1"><span class="s1">              &lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">            &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">          &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">        &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">      )}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">      {/* Header Banner */}</span></p>
-<p class="p1"><span class="s1">      &lt;header className="border-b border-slate-800 bg-slate-900/40 backdrop-blur-md sticky top-0 z-40 px-6 py-4 flex flex-wrap items-center justify-between gap-4"&gt;</span></p>
-<p class="p1"><span class="s1">        &lt;div className="flex items-center gap-3"&gt;</span></p>
-<p class="p1"><span class="s1">          &lt;div className="bg-indigo-600 text-white p-2.5 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-600/30"&gt;</span></p>
-<p class="p1"><span class="s1">            &lt;Activity className="h-6 w-6" /&gt;</span></p>
-<p class="p1"><span class="s1">          &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">          &lt;div&gt;</span></p>
-<p class="p1"><span class="s1">            &lt;div className="flex items-center gap-2"&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;span className="text-xs font-semibold uppercase tracking-wider text-indigo-400"&gt;Implementation Portal&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;span className="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/20"&gt;Active&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">            &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">            &lt;h1 className="text-xl font-extrabold text-slate-100 tracking-tight"&gt;VeloGo 3-City Launch Hub&lt;/h1&gt;</span></p>
-<p class="p1"><span class="s1">          &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">        &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">        &lt;div className="flex items-center gap-4"&gt;</span></p>
-<p class="p1"><span class="s1">          &lt;div className="hidden lg:flex items-center gap-6 border-l border-slate-800 pl-6 text-xs text-slate-400"&gt;</span></p>
-<p class="p1"><span class="s1">            &lt;div&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;div className="text-slate-500 font-medium"&gt;Operator Fleet&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;div className="font-semibold text-slate-200"&gt;800 Yadea e-Bikes&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">            &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">            &lt;div&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;div className="text-slate-500 font-medium"&gt;Launch Cities&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;div className="font-semibold text-slate-200"&gt;Rotterdam • Hamburg • Copenhagen&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">            &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">          &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">          &lt;button </span></p>
-<p class="p1"><span class="s1">            onClick={() =&gt; setIsApiKeyModalOpen(true)}</span></p>
-<p class="p1"><span class="s1">            className={`flex items-center gap-2 px-3.5 py-2 text-xs rounded-xl font-semibold border transition-all ${</span></p>
-<p class="p1"><span class="s1">              apiKey </span></p>
-<p class="p1"><span class="s1">                ? 'bg-emerald-600/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-600/20' </span></p>
-<p class="p1"><span class="s1">                : 'bg-slate-800/80 text-slate-300 border-slate-700/80 hover:bg-slate-800'</span></p>
-<p class="p1"><span class="s1">            }`}</span></p>
-<p class="p1"><span class="s1">          &gt;</span></p>
-<p class="p1"><span class="s1">            &lt;Settings className="h-3.5 w-3.5" /&gt;</span></p>
-<p class="p1"><span class="s1">            {apiKey ? 'API Connected' : 'Config Live API Key'}</span></p>
-<p class="p1"><span class="s1">          &lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">        &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">      &lt;/header&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">      {/* Main Container */}</span></p>
-<p class="p1"><span class="s1">      &lt;div className="flex-1 flex flex-col md:flex-row"&gt;</span></p>
-<p class="p1"><span class="s1">        </span></p>
-<p class="p1"><span class="s1">        {/* Navigation Sidebar */}</span></p>
-<p class="p1"><span class="s1">        &lt;aside className="w-full md:w-64 border-r border-slate-800 bg-slate-900/20 p-4 flex flex-col gap-2"&gt;</span></p>
-<p class="p1"><span class="s1">          &lt;p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest px-3 mb-2"&gt;Modules&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1">          </span></p>
-<p class="p1"><span class="s1">          &lt;button </span></p>
-<p class="p1"><span class="s1">            onClick={() =&gt; setActiveTab('dashboard')}</span></p>
-<p class="p1"><span class="s1">            className={`flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all ${</span></p>
-<p class="p1"><span class="s1">              activeTab === 'dashboard' </span></p>
-<p class="p1"><span class="s1">                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/15' </span></p>
-<p class="p1"><span class="s1">                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'</span></p>
-<p class="p1"><span class="s1">            }`}</span></p>
-<p class="p1"><span class="s1">          &gt;</span></p>
-<p class="p1"><span class="s1">            &lt;Sliders className="h-4 w-4" /&gt;</span></p>
-<p class="p1"><span class="s1">            Dashboard Hub</span></p>
-<p class="p1"><span class="s1">          &lt;/button&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">          &lt;button </span></p>
-<p class="p1"><span class="s1">            onClick={() =&gt; setActiveTab('tracker')}</span></p>
-<p class="p1"><span class="s1">            className={`flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all ${</span></p>
-<p class="p1"><span class="s1">              activeTab === 'tracker' </span></p>
-<p class="p1"><span class="s1">                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/15' </span></p>
-<p class="p1"><span class="s1">                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'</span></p>
-<p class="p1"><span class="s1">            }`}</span></p>
-<p class="p1"><span class="s1">          &gt;</span></p>
-<p class="p1"><span class="s1">            &lt;CheckCircle2 className="h-4 w-4" /&gt;</span></p>
-<p class="p1"><span class="s1">            Onboarding Tracker</span></p>
-<p class="p1"><span class="s1">          &lt;/button&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">          &lt;button </span></p>
-<p class="p1"><span class="s1">            onClick={() =&gt; setActiveTab('automation')}</span></p>
-<p class="p1"><span class="s1">            className={`flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all ${</span></p>
-<p class="p1"><span class="s1">              activeTab === 'automation' </span></p>
-<p class="p1"><span class="s1">                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/15' </span></p>
-<p class="p1"><span class="s1">                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'</span></p>
-<p class="p1"><span class="s1">            }`}</span></p>
-<p class="p1"><span class="s1">          &gt;</span></p>
-<p class="p1"><span class="s1">            &lt;Cpu className="h-4 w-4 text-indigo-400" /&gt;</span></p>
-<p class="p1"><span class="s1">            n8n Workflow Studio</span></p>
-<p class="p1"><span class="s1">          &lt;/button&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">          &lt;button </span></p>
-<p class="p1"><span class="s1">            onClick={() =&gt; setActiveTab('advisor')}</span></p>
-<p class="p1"><span class="s1">            className={`flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all ${</span></p>
-<p class="p1"><span class="s1">              activeTab === 'advisor' </span></p>
-<p class="p1"><span class="s1">                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/15' </span></p>
-<p class="p1"><span class="s1">                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'</span></p>
-<p class="p1"><span class="s1">            }`}</span></p>
-<p class="p1"><span class="s1">          &gt;</span></p>
-<p class="p1"><span class="s1">            &lt;Sparkles className="h-4 w-4" /&gt;</span></p>
-<p class="p1"><span class="s1">            Gemini Launch Advisor</span></p>
-<p class="p1"><span class="s1">          &lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">        &lt;/aside&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">        {/* Core Content Area */}</span></p>
-<p class="p1"><span class="s1">        &lt;main className="flex-1 bg-[#0b0f19] p-6 lg:p-8 overflow-y-auto"&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">          {/* TAB: DASHBOARD */}</span></p>
-<p class="p1"><span class="s1">          {activeTab === 'dashboard' &amp;&amp; (</span></p>
-<p class="p1"><span class="s1">            &lt;div className="space-y-8 max-w-6xl"&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;div className="relative bg-gradient-to-r from-indigo-900/30 via-slate-900 to-slate-900 rounded-3xl border border-indigo-500/20 p-6 lg:p-8 overflow-hidden"&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;div className="absolute top-0 right-0 w-96 h-96 bg-indigo-600/5 rounded-full blur-3xl pointer-events-none"&gt;&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6"&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;div&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;span className="bg-indigo-500/20 text-indigo-300 text-xs font-bold px-3 py-1 rounded-full border border-indigo-400/20"&gt;Wunder Partner Workspace&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;h2 className="text-2xl lg:text-3xl font-extrabold text-slate-100 tracking-tight mt-2.5"&gt;Welcome, VeloGo Europe!&lt;/h2&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;p className="text-slate-400 text-sm mt-2 max-w-xl leading-relaxed"&gt;</span></p>
-<p class="p1"><span class="s1">                      This space is your dedicated launch portal for scaling your 800-bike deployment across Hamburg, Copenhagen, and Rotterdam.</span></p>
-<p class="p1"><span class="s1">                    &lt;/p&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;button </span></p>
-<p class="p1"><span class="s1">                    onClick={() =&gt; setActiveTab('tracker')}</span></p>
-<p class="p1"><span class="s1">                    className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-3 rounded-xl transition-all shadow-lg shadow-indigo-600/20 flex items-center gap-2"</span></p>
-<p class="p1"><span class="s1">                  &gt;</span></p>
-<p class="p1"><span class="s1">                    View Roadmaps &lt;ArrowRight className="h-4 w-4" /&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">              {/* Stats &amp; Mini-cards */}</span></p>
-<p class="p1"><span class="s1">              &lt;div className="grid grid-cols-1 md:grid-cols-3 gap-6"&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;div className="bg-slate-900 border border-slate-800 rounded-2xl p-6"&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;span className="text-slate-500 text-xs font-bold uppercase tracking-wider"&gt;Overall Integration&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;div className="flex items-center gap-4 mt-3"&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;span className="text-2xl font-extrabold text-slate-100"&gt;20%&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;span className="text-xs text-indigo-400 font-medium"&gt;Stage 1 Active&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;p className="text-slate-500 text-[11px] mt-2"&gt;White-label asset gathering underway; staging server deployment completed.&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">                &lt;div className="bg-slate-900 border border-slate-800 rounded-2xl p-6"&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;span className="text-slate-500 text-xs font-bold uppercase tracking-wider"&gt;Active Deployments&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;div className="space-y-1.5 mt-3"&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;div className="flex justify-between text-xs text-slate-300"&gt;&lt;span className="font-semibold"&gt;Rotterdam, NL&lt;/span&gt;&lt;span&gt;300 e-Bikes&lt;/span&gt;&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;div className="flex justify-between text-xs text-slate-300"&gt;&lt;span className="font-semibold"&gt;Hamburg, DE&lt;/span&gt;&lt;span&gt;300 e-Bikes&lt;/span&gt;&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;div className="flex justify-between text-xs text-slate-300"&gt;&lt;span className="font-semibold"&gt;Copenhagen, DK&lt;/span&gt;&lt;span&gt;200 e-Bikes&lt;/span&gt;&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">                &lt;div className="bg-slate-900 border border-slate-800 rounded-2xl p-6"&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;span className="text-slate-500 text-xs font-bold uppercase tracking-wider"&gt;n8n Automation Engine&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;div className="flex items-center gap-2 mt-3 text-emerald-400 text-sm font-semibold"&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;Check className="h-4 w-4" /&gt; Ready to Integrate</span></p>
-<p class="p1"><span class="s1">                  &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;p className="text-slate-500 text-[11px] mt-2"&gt;Zero-code pipelines save 14+ manual administrative hours per city each week.&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">            &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">          )}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">          {/* TAB: ONBOARDING TRACKER */}</span></p>
-<p class="p1"><span class="s1">          {activeTab === 'tracker' &amp;&amp; (</span></p>
-<p class="p1"><span class="s1">            &lt;div className="space-y-6 max-w-5xl"&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5"&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;div&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;h2 className="text-2xl font-bold text-slate-100 flex items-center gap-2"&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;CheckCircle2 className="h-6 w-6 text-indigo-500" /&gt;</span></p>
-<p class="p1"><span class="s1">                    Onboarding Roadmaps</span></p>
-<p class="p1"><span class="s1">                  &lt;/h2&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;p className="text-slate-400 text-xs mt-1"&gt;Track task status, delivery owners, and milestone progressions through Go-Live and Launch.&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                </span></p>
-<p class="p1"><span class="s1">                {/* Visual Tracker Summary Filters */}</span></p>
-<p class="p1"><span class="s1">                &lt;div className="flex gap-2"&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;span className="bg-emerald-500/10 text-emerald-400 text-[11px] font-bold px-3 py-1 rounded-full border border-emerald-500/20 flex items-center gap-1.5"&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;span className="h-1.5 w-1.5 rounded-full bg-emerald-400"&gt;&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                    {tasks.filter(t =&gt; t.status === 'completed').length} Completed</span></p>
-<p class="p1"><span class="s1">                  &lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;span className="bg-amber-500/10 text-amber-400 text-[11px] font-bold px-3 py-1 rounded-full border border-amber-500/20 flex items-center gap-1.5"&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;span className="h-1.5 w-1.5 rounded-full bg-amber-400"&gt;&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                    {tasks.filter(t =&gt; t.status === 'in-progress').length} In Progress</span></p>
-<p class="p1"><span class="s1">                  &lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;span className="bg-slate-800 text-slate-400 text-[11px] font-bold px-3 py-1 rounded-full border border-slate-700 flex items-center gap-1.5"&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;span className="h-1.5 w-1.5 rounded-full bg-slate-500"&gt;&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                    {tasks.filter(t =&gt; t.status === 'pending').length} Pending</span></p>
-<p class="p1"><span class="s1">                  &lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">              {/* Task Roadmap List grouped by weeks */}</span></p>
-<p class="p1"><span class="s1">              &lt;div className="space-y-4"&gt;</span></p>
-<p class="p1"><span class="s1">                {['Weeks 1-2', 'Weeks 3-4', 'Weeks 5-6', 'Weeks 7-8', 'Weeks 9-10'].map((weekStr) =&gt; {</span></p>
-<p class="p1"><span class="s1">                  const weekTasks = tasks.filter(t =&gt; t.week === weekStr);</span></p>
-<p class="p1"><span class="s1">                  if (weekTasks.length === 0) return null;</span></p>
-<p class="p1"><span class="s1">                  </span></p>
-<p class="p1"><span class="s1">                  return (</span></p>
-<p class="p1"><span class="s1">                    &lt;div key={weekStr} className="space-y-2"&gt;</span></p>
-<p class="p1"><span class="s1">                      &lt;div className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-2 mb-2"&gt;{weekStr}&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                      &lt;div className="space-y-3"&gt;</span></p>
-<p class="p1"><span class="s1">                        {weekTasks.map((task) =&gt; (</span></p>
-<p class="p1"><span class="s1">                          &lt;div </span></p>
-<p class="p1"><span class="s1">                            key={task.id} </span></p>
-<p class="p1"><span class="s1">                            className={`bg-slate-900 border transition-all rounded-xl overflow-hidden ${</span></p>
-<p class="p1"><span class="s1">                              expandedTask === task.id ? 'border-indigo-500/50 shadow-lg shadow-indigo-500/5' : 'border-slate-800 hover:border-slate-700'</span></p>
-<p class="p1"><span class="s1">                            }`}</span></p>
-<p class="p1"><span class="s1">                          &gt;</span></p>
-<p class="p1"><span class="s1">                            &lt;div className="p-4 flex flex-wrap items-center justify-between gap-4 cursor-pointer" onClick={() =&gt; setExpandedTask(expandedTask === task.id ? null : task.id)}&gt;</span></p>
-<p class="p1"><span class="s1">                              &lt;div className="flex items-center gap-3"&gt;</span></p>
-<p class="p1"><span class="s1">                                {/* Clickable Status Toggle */}</span></p>
-<p class="p1"><span class="s1">                                &lt;button </span></p>
-<p class="p1"><span class="s1">                                  onClick={(e) =&gt; {</span></p>
-<p class="p1"><span class="s1">                                    e.stopPropagation();</span></p>
-<p class="p1"><span class="s1">                                    handleToggleTaskStatus(task.id);</span></p>
-<p class="p1"><span class="s1">                                  }}</span></p>
-<p class="p1"><span class="s1">                                  className={`h-5 w-5 rounded-full flex items-center justify-center border transition-all ${</span></p>
-<p class="p1"><span class="s1">                                    task.status === 'completed' </span></p>
-<p class="p1"><span class="s1">                                      ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500' </span></p>
-<p class="p1"><span class="s1">                                      : task.status === 'in-progress'</span></p>
-<p class="p1"><span class="s1">                                      ? 'bg-amber-500/20 text-amber-500 border-amber-500'</span></p>
-<p class="p1"><span class="s1">                                      : 'border-slate-700 hover:border-indigo-500/50'</span></p>
-<p class="p1"><span class="s1">                                  }`}</span></p>
-<p class="p1"><span class="s1">                                &gt;</span></p>
-<p class="p1"><span class="s1">                                  {task.status === 'completed' &amp;&amp; &lt;span className="text-[10px] font-bold"&gt;✓&lt;/span&gt;}</span></p>
-<p class="p1"><span class="s1">                                  {task.status === 'in-progress' &amp;&amp; &lt;span className="text-[10px] font-bold"&gt;/&lt;/span&gt;}</span></p>
-<p class="p1"><span class="s1">                                &lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">                                &lt;div&gt;</span></p>
-<p class="p1"><span class="s1">                                  &lt;div className="flex items-center gap-2"&gt;</span></p>
-<p class="p1"><span class="s1">                                    &lt;span className="text-xs font-semibold text-slate-200"&gt;{task.title}&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                                    &lt;span className="text-[9px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded-md font-medium"&gt;{task.category}&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                                  &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                                &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                              &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">                              &lt;div className="flex items-center gap-3 ml-8"&gt;</span></p>
-<p class="p1"><span class="s1">                                {/* Visual Status Badge */}</span></p>
-<p class="p1"><span class="s1">                                &lt;span className={`text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full border ${getStatusColor(task.status)}`}&gt;</span></p>
-<p class="p1"><span class="s1">                                  {task.status.replace('-', ' ')}</span></p>
-<p class="p1"><span class="s1">                                &lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                                {expandedTask === task.id ? &lt;ChevronUp className="h-4 w-4 text-slate-500" /&gt; : &lt;ChevronDown className="h-4 w-4 text-slate-500" /&gt;}</span></p>
-<p class="p1"><span class="s1">                              &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                            &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">                            {/* Collapsible Panel */}</span></p>
-<p class="p1"><span class="s1">                            {expandedTask === task.id &amp;&amp; (</span></p>
-<p class="p1"><span class="s1">                              &lt;div className="bg-slate-950/60 border-t border-slate-800 p-4 text-xs text-slate-400 space-y-3 leading-relaxed"&gt;</span></p>
-<p class="p1"><span class="s1">                                &lt;p&gt;{task.description}&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1">                                &lt;div className="flex gap-4 pt-2 text-[10px] text-slate-500"&gt;</span></p>
-<p class="p1"><span class="s1">                                  &lt;div&gt;&lt;span className="font-bold text-slate-400"&gt;Lead Owner:&lt;/span&gt; {task.owner}&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                                &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                              &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                            )}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">                          &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                        ))}</span></p>
-<p class="p1"><span class="s1">                      &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                  );</span></p>
-<p class="p1"><span class="s1">                })}</span></p>
-<p class="p1"><span class="s1">              &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">            &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">          )}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">          {/* TAB: THE n8n + GEMINI WORKFLOW STUDIO */}</span></p>
-<p class="p1"><span class="s1">          {activeTab === 'automation' &amp;&amp; (</span></p>
-<p class="p1"><span class="s1">            &lt;div className="space-y-6 max-w-6xl"&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;div className="border-b border-slate-800 pb-5"&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;h2 className="text-2xl font-bold text-slate-100 flex items-center gap-2"&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;Cpu className="h-6 w-6 text-indigo-500 animate-pulse" /&gt;</span></p>
-<p class="p1"><span class="s1">                  n8n + Gemini Automation Studio</span></p>
-<p class="p1"><span class="s1">                &lt;/h2&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;p className="text-slate-400 text-xs mt-1"&gt;</span></p>
-<p class="p1"><span class="s1">                  How does it work? Select one of the three real-world operation pipelines below. You can edit the raw input on the left, click &lt;strong&gt;"Execute Workflow"&lt;/strong&gt;, and see the exact JSON payload the n8n-Gemini integration generates on the right.</span></p>
-<p class="p1"><span class="s1">                &lt;/p&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">              {/* Three Pipeline Buttons */}</span></p>
-<p class="p1"><span class="s1">              &lt;div className="grid grid-cols-1 md:grid-cols-3 gap-4"&gt;</span></p>
-<p class="p1"><span class="s1">                {Object.keys(scenarios).map((key) =&gt; (</span></p>
-<p class="p1"><span class="s1">                  &lt;button</span></p>
-<p class="p1"><span class="s1">                    key={key}</span></p>
-<p class="p1"><span class="s1">                    onClick={() =&gt; setSelectedScenario(key)}</span></p>
-<p class="p1"><span class="s1">                    className={`p-5 rounded-2xl border text-left transition-all ${</span></p>
-<p class="p1"><span class="s1">                      selectedScenario === key </span></p>
-<p class="p1"><span class="s1">                        ? 'bg-indigo-600/10 border-indigo-500 shadow-lg shadow-indigo-500/5 ring-1 ring-indigo-500/30' </span></p>
-<p class="p1"><span class="s1">                        : 'bg-slate-900 border-slate-800 hover:border-slate-700'</span></p>
-<p class="p1"><span class="s1">                    }`}</span></p>
-<p class="p1"><span class="s1">                  &gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;div className="flex items-center justify-between mb-2"&gt;</span></p>
-<p class="p1"><span class="s1">                      &lt;span className="text-xs font-bold text-slate-100"&gt;{scenarios[key].title}&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                      &lt;Activity className={`h-4 w-4 ${selectedScenario === key ? 'text-indigo-400' : 'text-slate-600'}`} /&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;p className="text-[11px] text-slate-400 leading-relaxed"&gt;{scenarios[key].description}&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">                ))}</span></p>
-<p class="p1"><span class="s1">              &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">              {/* Visual interactive n8n node path */}</span></p>
-<p class="p1"><span class="s1">              &lt;div className="bg-slate-950 border border-slate-800/80 rounded-2xl p-6 relative"&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;div className="absolute top-2 right-3 text-[10px] font-mono text-slate-600 uppercase tracking-widest select-none"&gt;n8n Workflow Engine&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                </span></p>
-<p class="p1"><span class="s1">                &lt;div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-4 relative py-6"&gt;</span></p>
-<p class="p1"><span class="s1">                  </span></p>
-<p class="p1"><span class="s1">                  {/* Node 1: Webhook Trigger */}</span></p>
-<p class="p1"><span class="s1">                  &lt;div className={`relative p-4 rounded-xl border-2 transition-all w-full lg:w-64 text-center ${</span></p>
-<p class="p1"><span class="s1">                    simStep &gt;= 1 ? 'border-emerald-500 bg-emerald-500/5' : 'border-slate-800 bg-slate-900'</span></p>
-<p class="p1"><span class="s1">                  }`}&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;div className="absolute -top-3 left-4 bg-slate-950 px-2 text-[10px] text-slate-500 uppercase tracking-wider font-mono"&gt;Trigger Node&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;div className="h-8 w-8 bg-indigo-500/10 text-indigo-400 rounded-lg flex items-center justify-center mx-auto mb-2"&gt;</span></p>
-<p class="p1"><span class="s1">                      &lt;Terminal className="h-4 w-4" /&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;span className="text-[11px] font-bold text-slate-200 block"&gt;{scenarios[selectedScenario].triggerLabel}&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;span className="text-[9px] text-slate-500 block mt-1"&gt;Accepts incoming data streams&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                    {simStep &gt;= 1 &amp;&amp; (</span></p>
-<p class="p1"><span class="s1">                      &lt;div className="absolute -bottom-2.5 left-1/2 transform -translate-x-1/2 bg-emerald-500 text-slate-950 text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1"&gt;</span></p>
-<p class="p1"><span class="s1">                        &lt;Check className="h-2.5 w-2.5" /&gt; Executed</span></p>
-<p class="p1"><span class="s1">                      &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                    )}</span></p>
-<p class="p1"><span class="s1">                  &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">                  &lt;div className={`hidden lg:block h-0.5 w-12 transition-all ${simStep &gt;= 2 ? 'bg-emerald-500' : 'bg-slate-800'}`}&gt;&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">                  {/* Node 2: Gemini Cognitive Parser */}</span></p>
-<p class="p1"><span class="s1">                  &lt;div className={`relative p-4 rounded-xl border-2 transition-all w-full lg:w-72 text-center ${</span></p>
-<p class="p1"><span class="s1">                    simStep &gt;= 2 ? 'border-emerald-500 bg-emerald-500/5 shadow-md' : 'border-slate-800 bg-slate-900'</span></p>
-<p class="p1"><span class="s1">                  } ${simStep === 2 ? 'ring-2 ring-indigo-500/50 animate-pulse' : ''}`}&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;div className="absolute -top-3 left-4 bg-slate-950 px-2 text-[10px] text-indigo-400 uppercase tracking-wider font-mono flex items-center gap-1"&gt;</span></p>
-<p class="p1"><span class="s1">                      &lt;Sparkles className="h-3 w-3" /&gt; Gemini Node</span></p>
-<p class="p1"><span class="s1">                    &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;div className="h-8 w-8 bg-indigo-500/10 text-indigo-400 rounded-lg flex items-center justify-center mx-auto mb-2"&gt;</span></p>
-<p class="p1"><span class="s1">                      &lt;Sparkles className="h-4 w-4 text-indigo-400" /&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;span className="text-[11px] font-bold text-slate-200 block"&gt;{scenarios[selectedScenario].geminiLabel}&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;span className="text-[9px] text-slate-500 block mt-1"&gt;Translates raw input into structured JSON&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                    {simStep &gt;= 3 &amp;&amp; (</span></p>
-<p class="p1"><span class="s1">                      &lt;div className="absolute -bottom-2.5 left-1/2 transform -translate-x-1/2 bg-emerald-500 text-slate-950 text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1"&gt;</span></p>
-<p class="p1"><span class="s1">                        &lt;Check className="h-2.5 w-2.5" /&gt; Processed</span></p>
-<p class="p1"><span class="s1">                      &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                    )}</span></p>
-<p class="p1"><span class="s1">                  &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">                  &lt;div className={`hidden lg:block h-0.5 w-12 transition-all ${simStep &gt;= 3 ? 'bg-emerald-500' : 'bg-slate-800'}`}&gt;&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">                  {/* Node 3: Wunder API Destination */}</span></p>
-<p class="p1"><span class="s1">                  &lt;div className={`relative p-4 rounded-xl border-2 transition-all w-full lg:w-64 text-center ${</span></p>
-<p class="p1"><span class="s1">                    simStep &gt;= 3 ? 'border-emerald-500 bg-emerald-500/5' : 'border-slate-800 bg-slate-900'</span></p>
-<p class="p1"><span class="s1">                  }`}&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;div className="absolute -top-3 left-4 bg-slate-950 px-2 text-[10px] text-slate-500 uppercase tracking-wider font-mono"&gt;Action Node&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;div className="h-8 w-8 bg-indigo-500/10 text-indigo-400 rounded-lg flex items-center justify-center mx-auto mb-2"&gt;</span></p>
-<p class="p1"><span class="s1">                      &lt;Database className="h-4 w-4" /&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;span className="text-[11px] font-bold text-slate-200 block"&gt;{scenarios[selectedScenario].actionLabel}&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;span className="text-[9px] text-slate-500 block mt-1"&gt;Pushes variables into Wunder server&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                    {simStep &gt;= 4 &amp;&amp; (</span></p>
-<p class="p1"><span class="s1">                      &lt;div className="absolute -bottom-2.5 left-1/2 transform -translate-x-1/2 bg-emerald-500 text-slate-950 text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1"&gt;</span></p>
-<p class="p1"><span class="s1">                        &lt;Check className="h-2.5 w-2.5" /&gt; Synchronized</span></p>
-<p class="p1"><span class="s1">                      &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                    )}</span></p>
-<p class="p1"><span class="s1">                  &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">                &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">                &lt;div className="mt-6 flex justify-center"&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;button</span></p>
-<p class="p1"><span class="s1">                    onClick={runWorkflowSimulation}</span></p>
-<p class="p1"><span class="s1">                    disabled={isSimulating}</span></p>
-<p class="p1"><span class="s1">                    className="bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-800 text-white text-xs font-bold py-3 px-6 rounded-xl transition-all shadow-lg flex items-center gap-2"</span></p>
-<p class="p1"><span class="s1">                  &gt;</span></p>
-<p class="p1"><span class="s1">                    {isSimulating ? (</span></p>
-<p class="p1"><span class="s1">                      &lt;&gt;</span></p>
-<p class="p1"><span class="s1">                        &lt;RefreshCw className="h-3.5 w-3.5 animate-spin" /&gt;</span></p>
-<p class="p1"><span class="s1">                        Running Pipeline Simulation...</span></p>
-<p class="p1"><span class="s1">                      &lt;/&gt;</span></p>
-<p class="p1"><span class="s1">                    ) : (</span></p>
-<p class="p1"><span class="s1">                      &lt;&gt;</span></p>
-<p class="p1"><span class="s1">                        &lt;Play className="h-3.5 w-3.5" /&gt;</span></p>
-<p class="p1"><span class="s1">                        Execute Workflow Pipeline</span></p>
-<p class="p1"><span class="s1">                      &lt;/&gt;</span></p>
-<p class="p1"><span class="s1">                    )}</span></p>
-<p class="p1"><span class="s1">                  &lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">              {/* Input vs Output side-by-side workspace */}</span></p>
-<p class="p1"><span class="s1">              &lt;div className="grid grid-cols-1 lg:grid-cols-2 gap-6"&gt;</span></p>
-<p class="p1"><span class="s1">                </span></p>
-<p class="p1"><span class="s1">                {/* Inputs block */}</span></p>
-<p class="p1"><span class="s1">                &lt;div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between"&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;div&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2.5"&gt;Raw Input (Incoming E-Mail, Log, or Form)&lt;/h4&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;textarea</span></p>
-<p class="p1"><span class="s1">                      value={inputPayload}</span></p>
-<p class="p1"><span class="s1">                      onChange={(e) =&gt; setInputPayload(e.target.value)}</span></p>
-<p class="p1"><span class="s1">                      disabled={isSimulating}</span></p>
-<p class="p1"><span class="s1">                      className="w-full bg-slate-950 border border-slate-800 text-slate-300 font-mono text-[11px] leading-relaxed p-4 rounded-xl focus:outline-none focus:border-indigo-500 transition-colors h-[220px]"</span></p>
-<p class="p1"><span class="s1">                    /&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;p className="text-[10px] text-slate-500 leading-relaxed mt-3"&gt;</span></p>
-<p class="p1"><span class="s1">                    You can edit the text box above before running the simulation to see how Gemini successfully parses your customized edits.</span></p>
-<p class="p1"><span class="s1">                  &lt;/p&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">                {/* Outputs block */}</span></p>
-<p class="p1"><span class="s1">                &lt;div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between"&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;div&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;div className="flex items-center justify-between mb-2.5"&gt;</span></p>
-<p class="p1"><span class="s1">                      &lt;h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider"&gt;Output: Generated Wunder Schema (JSON)&lt;/h4&gt;</span></p>
-<p class="p1"><span class="s1">                      {simResult &amp;&amp; (</span></p>
-<p class="p1"><span class="s1">                        &lt;button </span></p>
-<p class="p1"><span class="s1">                          onClick={() =&gt; copyToClipboard(JSON.stringify(simResult, null, 2))}</span></p>
-<p class="p1"><span class="s1">                          className="text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1 text-[11px] font-semibold"</span></p>
-<p class="p1"><span class="s1">                        &gt;</span></p>
-<p class="p1"><span class="s1">                          &lt;Copy className="h-3 w-3" /&gt; Copy JSON</span></p>
-<p class="p1"><span class="s1">                        &lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">                      )}</span></p>
-<p class="p1"><span class="s1">                    &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">                    &lt;div className="h-[220px] bg-slate-950 border border-slate-800 rounded-xl p-4 overflow-auto font-mono text-[11px]"&gt;</span></p>
-<p class="p1"><span class="s1">                      {isSimulating &amp;&amp; simStep &lt; 4 ? (</span></p>
-<p class="p1"><span class="s1">                        &lt;div className="text-slate-500 italic space-y-2"&gt;</span></p>
-<p class="p1"><span class="s1">                          &lt;div&gt;🔄 Streaming logs:&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                          {simLogs.map((log, i) =&gt; (</span></p>
-<p class="p1"><span class="s1">                            &lt;div key={i} className="text-[10px] text-indigo-300"&gt;↳ {log.text}&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                          ))}</span></p>
-<p class="p1"><span class="s1">                        &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                      ) : simResult ? (</span></p>
-<p class="p1"><span class="s1">                        &lt;pre className="text-emerald-400"&gt;{JSON.stringify(simResult, null, 2)}&lt;/pre&gt;</span></p>
-<p class="p1"><span class="s1">                      ) : (</span></p>
-<p class="p1"><span class="s1">                        &lt;div className="text-slate-600 italic text-center pt-16"&gt;</span></p>
-<p class="p1"><span class="s1">                          Click "Execute Workflow Pipeline" to see structured JSON outputs here...</span></p>
-<p class="p1"><span class="s1">                        &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                      )}</span></p>
-<p class="p1"><span class="s1">                    &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;p className="text-[10px] text-slate-500 leading-relaxed mt-3"&gt;</span></p>
-<p class="p1"><span class="s1">                    This generated structured JSON payload maps directly to database variables inside Wunder API endpoints, bypassing any administrative intervention.</span></p>
-<p class="p1"><span class="s1">                  &lt;/p&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">              &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">            &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">          )}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">          {/* TAB: GEMINI IMPLEMENTATION ADVISOR */}</span></p>
-<p class="p1"><span class="s1">          {activeTab === 'advisor' &amp;&amp; (</span></p>
-<p class="p1"><span class="s1">            &lt;div className="space-y-6 max-w-5xl flex flex-col h-[calc(100vh-140px)]"&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;div className="border-b border-slate-800 pb-4"&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;h2 className="text-2xl font-bold text-slate-100 flex items-center gap-2"&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;Sparkles className="h-6 w-6 text-indigo-400" /&gt;</span></p>
-<p class="p1"><span class="s1">                  Gemini Launch Advisor</span></p>
-<p class="p1"><span class="s1">                &lt;/h2&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;p className="text-slate-400 text-xs mt-1"&gt;Ask questions regarding GBFS/MDS structures, Wunder API formats, payment settings, or custom localizing.&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">              {/* Chat Log Window */}</span></p>
-<p class="p1"><span class="s1">              &lt;div className="flex-1 bg-slate-900 border border-slate-800 rounded-2xl p-4 overflow-y-auto space-y-4 flex flex-col min-h-[300px]"&gt;</span></p>
-<p class="p1"><span class="s1">                {chatMessages.map((msg, idx) =&gt; (</span></p>
-<p class="p1"><span class="s1">                  &lt;div </span></p>
-<p class="p1"><span class="s1">                    key={idx} </span></p>
-<p class="p1"><span class="s1">                    className={`flex flex-col max-w-[85%] ${</span></p>
-<p class="p1"><span class="s1">                      msg.sender === 'user' ? 'self-end items-end' : 'self-start items-start'</span></p>
-<p class="p1"><span class="s1">                    }`}</span></p>
-<p class="p1"><span class="s1">                  &gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;span className="text-[9px] text-slate-500 font-bold mb-1"&gt;</span></p>
-<p class="p1"><span class="s1">                      {msg.sender === 'user' ? 'VeloGo Project Team' : 'Wunder AI Advisor'}</span></p>
-<p class="p1"><span class="s1">                    &lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;div </span></p>
-<p class="p1"><span class="s1">                      className={`p-3.5 rounded-2xl text-xs leading-relaxed whitespace-pre-wrap ${</span></p>
-<p class="p1"><span class="s1">                        msg.sender === 'user' </span></p>
-<p class="p1"><span class="s1">                          ? 'bg-indigo-600 text-white rounded-tr-none' </span></p>
-<p class="p1"><span class="s1">                          : 'bg-slate-950 text-slate-300 border border-slate-800 rounded-tl-none'</span></p>
-<p class="p1"><span class="s1">                      }`}</span></p>
-<p class="p1"><span class="s1">                    &gt;</span></p>
-<p class="p1"><span class="s1">                      {msg.text}</span></p>
-<p class="p1"><span class="s1">                    &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                ))}</span></p>
-<p class="p1"><span class="s1">                {isChatLoading &amp;&amp; (</span></p>
-<p class="p1"><span class="s1">                  &lt;div className="self-start flex flex-col max-w-[85%]"&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;span className="text-[9px] text-slate-500 font-bold mb-1"&gt;Wunder AI Advisor&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1">                    &lt;div className="bg-slate-950 text-slate-500 border border-slate-800 p-3 rounded-2xl rounded-tl-none text-xs flex items-center gap-2.5"&gt;</span></p>
-<p class="p1"><span class="s1">                      &lt;RefreshCw className="h-3.5 w-3.5 animate-spin text-indigo-400" /&gt;</span></p>
-<p class="p1"><span class="s1">                      Analyzing queries against Wunder API specs...</span></p>
-<p class="p1"><span class="s1">                    &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">                )}</span></p>
-<p class="p1"><span class="s1">                &lt;div ref={chatEndRef} /&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">              &lt;div className="flex gap-2"&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;input </span></p>
-<p class="p1"><span class="s1">                  type="text"</span></p>
-<p class="p1"><span class="s1">                  placeholder="Ask a question..."</span></p>
-<p class="p1"><span class="s1">                  value={chatInput}</span></p>
-<p class="p1"><span class="s1">                  onChange={(e) =&gt; setChatInput(e.target.value)}</span></p>
-<p class="p1"><span class="s1">                  onKeyDown={(e) =&gt; { if (e.key === 'Enter') handleSendChat(); }}</span></p>
-<p class="p1"><span class="s1">                  className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-100 focus:outline-none focus:border-indigo-500 transition-colors"</span></p>
-<p class="p1"><span class="s1">                /&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;button </span></p>
-<p class="p1"><span class="s1">                  onClick={() =&gt; handleSendChat()}</span></p>
-<p class="p1"><span class="s1">                  disabled={isChatLoading}</span></p>
-<p class="p1"><span class="s1">                  className="bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-800 text-white px-4 py-3 rounded-xl transition-colors flex items-center justify-center shadow-lg"</span></p>
-<p class="p1"><span class="s1">                &gt;</span></p>
-<p class="p1"><span class="s1">                  &lt;Send className="h-4 w-4" /&gt;</span></p>
-<p class="p1"><span class="s1">                &lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">              &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">            &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">          )}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">        &lt;/main&gt;</span></p>
-<p class="p1"><span class="s1">      &lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">      {/* Footer Branding */}</span></p>
-<p class="p1"><span class="s1">      &lt;footer className="border-t border-slate-800 bg-slate-950/60 p-4 text-center text-[10px] text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4 px-6"&gt;</span></p>
-<p class="p1"><span class="s1">        &lt;div&gt;© 2026 Wunder Mobility. Systems Sandbox Deployment Workspace.&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">      &lt;/footer&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">    &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">  );</span></p>
-<p class="p1"><span class="s1">}</span></p>
+<body class="bg-[#0f172a] text-slate-100 font-sans flex flex-col selection:bg-indigo-500 selection:text-white min-h-screen">
+
+  <!-- Root Application Container -->
+  <div id="app-root" class="flex flex-col min-h-screen w-full"></div>
+
+  <!-- Application Logic (Vanilla JS) -->
+  <script>
+    const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent";
+
+    // Global Application Controller
+    const app = {
+      state: {
+        activeTab: 'tracker',
+        isApiKeyModalOpen: false,
+        apiKey: '',
+        toastMessage: null,
+        expandedTask: null,
+        
+        // Simulation State
+        selectedScenario: 'policy',
+        isSimulating: false,
+        simStep: 0,
+        simLogs: [],
+        simResult: null,
+        inputPayload: '',
+        
+        // Chat State
+        chatMessages: [
+          { sender: 'assistant', text: "Hello! I am your Wunder Launch Onboarding Assistant, backed by Gemini. I can assist you with setting up your 800 e-bikes, configuring GBFS/MDS feeds, localizing copy, or structuring your n8n workflow integrations. Ask me anything!" }
+        ],
+        chatInput: '',
+        isChatLoading: false,
+
+        // Tasks Data
+        tasks: [
+          { id: 1, week: 'Weeks 1-2', category: 'Strategy', title: 'Initialize Wunder Staging Environment', owner: 'Wunder CSM', status: 'completed', description: 'Deploy VeloGo sandbox instances and map administrative users.' },
+          { id: 2, week: 'Weeks 1-2', category: 'Hardware', title: 'Collect Yadea IoT Specifications & IMEI lists', owner: 'Client Team', status: 'completed', description: 'Gather SIM card details and IoT telemetry protocol specs for 800 e-bikes.' },
+          { id: 3, week: 'Weeks 1-2', category: 'Design', title: 'Submit White-Label App Design Assets', owner: 'Client Team', status: 'in-progress', description: 'Upload customized brand color hex-codes, logos, App Store/Google Play icon templates.' },
+          { id: 4, week: 'Weeks 3-4', category: 'Integrations', title: 'Stripe Gateway & Merchant Onboarding', owner: 'Client Team', status: 'pending', description: 'Configure dynamic local processing structures for EUR and DKK transactions.' },
+          { id: 5, week: 'Weeks 3-4', category: 'Regulatory', title: 'Establish GBFS & MDS API Endpoints', owner: 'Wunder CSM', status: 'pending', description: 'Build compliant feeds required for municipal permits in Hamburg, Rotterdam, and Copenhagen.' },
+          { id: 6, week: 'Weeks 5-6', category: 'Regulatory', title: 'Load City-specific Geofence Databases', owner: 'Wunder CSM', status: 'pending', description: 'Inject mandatory parking clusters, slow-riding corridors, and excluded zones.' },
+          { id: 7, week: 'Weeks 5-6', category: 'Localization', title: 'App Copy Localization (German, Dutch, Danish)', owner: 'Client Team', status: 'pending', description: 'Translate system copy, push notifications, and ride-end legal notices.' },
+          { id: 8, week: 'Weeks 7-8', category: 'Hardware', title: 'OTA Firmware Validation & Remote Unlock Tests', owner: 'Joint Team', status: 'pending', description: 'Conduct over-the-air test loops to ensure reliable wake/sleep/lock states.' },
+          { id: 9, week: 'Weeks 9-10', category: 'Ops', title: 'Staff Training on Wunder Fleet Operator App', owner: 'Wunder CSM', status: 'pending', description: 'Train local field mechanics and re-balancers on battery swap procedures.' },
+          { id: 10, week: 'Weeks 9-10', category: 'Launch', title: 'Rotterdam Soft Launch (100 e-Bikes)', owner: 'Client Team', status: 'pending', description: 'Soft deploy first batch of vehicles to test the telemetry, unlock times, and localized geofencing.' }
+        ],
+
+        // Scenarios Data
+        scenarios: {
+          policy: {
+            title: "Municipal Policy Geofencer",
+            description: "Automate speed limits and slow-zones by feeding raw municipal legal PDFs directly to Gemini, bypassing manual GPS plotting.",
+            triggerLabel: "Incoming Council PDF Webhook",
+            geminiLabel: "Extract Coordinates & GeoJSON Schema",
+            actionLabel: "PUT /v1/geofence (Wunder API)",
+            rawInput: `MEMORANDUM: City of Rotterdam Urban Planning Dept.\nEffective immediately, to ensure pedestrian safety around the South-East entrance of Rotterdam Central Station, a restricted speed threshold of fifteen kilometers per hour (15 km/h) is mandated within the corridor bounded by coordinates: NW: 51.9244, 4.4777; NE: 51.9252, 4.4791; SE: 51.9238, 4.4812; SW: 51.9230, 4.4795. Standard operational alerts must warn incoming riders.`,
+            result: {
+              zone_name: "Rotterdam Central Corridor - Pedestrian Safety Zone",
+              zone_type: "restricted_speed",
+              max_velocity_kmh: 15,
+              polygon: [
+                { lat: 51.9244, lng: 4.4777 },
+                { lat: 51.9252, lng: 4.4791 },
+                { lat: 51.9238, lng: 4.4812 },
+                { lat: 51.9230, lng: 4.4795 }
+              ],
+              push_notification: {
+                title_nl: "Snelheidsbeperkte zone!",
+                message_nl: "Let op! U rijdt een voetgangersveiligheidszone binnen. Maximale snelheid is 15 km/u."
+              },
+              compliance_tag: "Rotterdam-Stb-2026"
+            }
+          },
+          localization: {
+            title: "Contextual Multi-City Localizer",
+            description: "Instantly translate user-facing copy into German, Dutch, and Danish. Ensures micromobility terms like 'battery swap' or 'lock-to bar' translate correctly, not literally.",
+            triggerLabel: "Google Sheets Copy Update Webhook",
+            geminiLabel: "Contextual Mobility Translator",
+            actionLabel: "POST /v1/localization/batch",
+            rawInput: `[New App Version Notification Copy]\nTitle: "Out of Bounds!"\nBody: "Your e-bike is parked outside the mandatory parking zone. Please return it to a highlighted blue bay to avoid a €10 convenience fine, or lock it securely to the closest municipal rack."`,
+            result: {
+              de: { title: "Außerhalb der Zone!", body: "Dein E-Bike ist außerhalb der vorgeschriebenen Parkzone abgestellt. Bitte stelle es in einer blau markierten Parkbucht ab, um eine Servicegebühr von 10 € zu vermeiden, oder schließe es sicher an den nächsten Fahrradbügel an." },
+              nl: { title: "Buiten de zone!", body: "Je e-bike staat geparkeerd buiten de verplichte parkeerzone. Parkeer de fiets in een blauw gemarkeerd parkeervak om een toeslag van €10 te voorkomen, of zet hem veilig op slot aan de dichtstbijzijnde gemeentelijke fietsbeugel." },
+              da: { title: "Uden for parkeringszone!", body: "Din e-bike er parkeret uden for den obligatoriske parkeringszone. Returner den til et markeret blåt parkeringsfelt for at undgå et gebyr på 10 €, eller lås den sikkert til det nærmeste kommunale cykelstativ." }
+            }
+          },
+          telemetry: {
+            title: "IoT Anomaly Diagnostics Coordinator",
+            description: "Scans low-signal bike diagnostics, diagnoses root issues via Gemini (e.g. GPS shield vs dead cell), and auto-assigns local repair task sheets.",
+            triggerLabel: "Wunder Raw Telemetry Log Hook",
+            geminiLabel: "Gemini IoT Diagnostic Engine",
+            actionLabel: "POST /v1/ops/dispatch/ticket",
+            rawInput: `DEVICE_ALERT: Vehicle ID HAM-902\n- Status: OFFLINE for 18.2 Hours\n- Last Coordinates: Hamburg Central Station (Südausgang)\n- Battery State: 78% (Voltage stable at 36.4V)\n- Signal Strength: RSSI -112 (Critical Drop)\n- Lock Status: Locked manually via physical cable.\n- Weather: Heavy downpour (Rainfall rate 12mm/h).\n- Local Geo-Data: Station Renovation underway, extensive steel scaffolding erected within 5 meters of coordinates.`,
+            result: {
+              diagnostics: {
+                vehicle_id: "HAM-902",
+                apparent_failure: "GPS Signal Blockage (RSSI Critical)",
+                risk_of_theft: "Low (Physical lock engaged, battery voltage is stable)",
+                root_cause_analysis: "High likelihood of antenna shielding caused by local steel construction scaffolding combined with signal attenuation from heavy rainfall. The vehicle state is safe but inaccessible to the app.",
+                recommended_action: "Send local mechanic to relocate the e-bike 15 meters away from the scaffold corridor to re-establish cellular heartbeat."
+              },
+              ops_ticket: {
+                priority: "Medium",
+                assigned_team: "Hamburg-Central-Ops",
+                mechanic_guide_de: "HINWEIS: Fahrzeug offline wegen Baugerüst. Bitte das Rad 15m weiter südlich schieben, bis die LED grün blinkt."
+              }
+            }
+          }
+        }
+      },
+
+      // Initialization
+      init: function() {
+        this.state.inputPayload = this.state.scenarios[this.state.selectedScenario].rawInput;
+        this.render();
+      },
+
+      // Methods
+      setTab: function(tabId) {
+        this.state.activeTab = tabId;
+        this.render();
+      },
+
+      toggleApiKeyModal: function(isOpen) {
+        this.state.isApiKeyModalOpen = isOpen;
+        this.render();
+      },
+
+      saveApiKey: function() {
+        const input = document.getElementById('api-key-input');
+        if (input) {
+          this.state.apiKey = input.value;
+        }
+        this.state.isApiKeyModalOpen = false;
+        this.triggerToast(this.state.apiKey ? "Live Gemini API Connected!" : "Switched to demo mode.");
+        this.render();
+      },
+
+      triggerToast: function(msg) {
+        this.state.toastMessage = msg;
+        this.render();
+        setTimeout(() => {
+          this.state.toastMessage = null;
+          this.render();
+        }, 3000);
+      },
+
+      toggleTaskStatus: function(id) {
+        this.state.tasks = this.state.tasks.map(t => {
+          if (t.id === id) {
+            const nextStatus = t.status === 'completed' ? 'in-progress' : t.status === 'in-progress' ? 'pending' : 'completed';
+            return { ...t, status: nextStatus };
+          }
+          return t;
+        });
+        this.triggerToast("Task status updated!");
+      },
+
+      toggleTaskExpand: function(id) {
+        this.state.expandedTask = this.state.expandedTask === id ? null : id;
+        this.render();
+      },
+
+      setScenario: function(key) {
+        this.state.selectedScenario = key;
+        this.state.inputPayload = this.state.scenarios[key].rawInput;
+        this.state.simResult = null;
+        this.state.simLogs = [];
+        this.state.simStep = 0;
+        this.render();
+      },
+
+      copyToClipboard: function(text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          this.triggerToast("Copied to clipboard!");
+        } catch (err) {
+          this.triggerToast("Failed to copy text.");
+        }
+        document.body.removeChild(textArea);
+      },
+
+      copySimResult: function() {
+        if(this.state.simResult) {
+           this.copyToClipboard(JSON.stringify(this.state.simResult, null, 2));
+        }
+      },
+
+      getStatusColor: function(status) {
+        switch (status) {
+          case 'completed': return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';
+          case 'in-progress': return 'bg-amber-500/10 text-amber-500 border-amber-500/20';
+          default: return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
+        }
+      },
+
+      generateGeminiContent: async function(prompt, systemInstruction) {
+        const payload = {
+          contents: [{ parts: [{ text: prompt }] }],
+          systemInstruction: { parts: [{ text: systemInstruction }] }
+        };
+        const targetKey = this.state.apiKey || "";
+        const url = `${API_URL}?key=${targetKey}`;
+
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!response.ok) {
+          throw new Error(`API error ${response.status}`);
+        }
+        return await response.json();
+      },
+
+      runSimulation: async function() {
+        // Sync payload from DOM before starting
+        const payloadInput = document.getElementById('payloadInput');
+        if (payloadInput) this.state.inputPayload = payloadInput.value;
+
+        this.state.isSimulating = true;
+        this.state.simStep = 1;
+        this.state.simLogs = [];
+        this.state.simResult = null;
+        this.render();
+
+        const pushLog = (text, delay) => {
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              this.state.simLogs.push({ timestamp: new Date().toLocaleTimeString(), text });
+              this.render();
+              resolve();
+            }, delay);
+          });
+        };
+
+        try {
+          await pushLog(`⚡ [Node 1: Webhook] Event triggered by ${this.state.scenarios[this.state.selectedScenario].triggerLabel}.`, 400);
+          await pushLog("📥 [Webhook] Received raw input data successfully. Sending payload to Gemini node.", 500);
+          
+          this.state.simStep = 2;
+          this.render();
+          await pushLog(`🧠 [Node 2: Gemini] Prompting Gemini model to parse input using structured schema.`, 600);
+
+          let finalResult = this.state.scenarios[this.state.selectedScenario].result;
+
+          if (this.state.apiKey) {
+            await pushLog("📡 [Gemini] Contacting live Gemini-2.5-Flash model...", 300);
+            const prompt = `Input data to parse: "${this.state.inputPayload}". Format output as clean JSON only, aligning exactly with the context of this scenario: ${this.state.scenarios[this.state.selectedScenario].title}.`;
+            const systemPrompt = "You are a professional n8n automation node. Convert input text into clean structural JSON maps for integration pipelines. Output only valid JSON with no backticks or markdown wrappers.";
+            const apiResponse = await this.generateGeminiContent(prompt, systemPrompt);
+            const textResponse = apiResponse.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+            try {
+              finalResult = JSON.parse(textResponse.replace(/```json|```/g, ''));
+              await pushLog("🟢 [Gemini] Successfully generated live parsed JSON response.", 500);
+            } catch (e) {
+              await pushLog("⚠️ [Gemini] Generated text was not perfect JSON, using fallback calibrated schema.", 400);
+            }
+          } else {
+            await pushLog("⚙️ [Gemini] Analyzing content semantics...", 1000);
+            await pushLog("⚙️ [Gemini] Formatting raw terms to structured operational JSON...", 1000);
+          }
+
+          this.state.simStep = 3;
+          this.render();
+          await pushLog(`🛰️ [Node 3: Wunder API] Syncing generated variables to Wunder REST endpoint.`, 600);
+          
+          this.state.simStep = 4;
+          this.state.simResult = finalResult;
+          this.render();
+          await pushLog("🎉 [Workflow Status: Success] All nodes executed successfully. Wunder database updated.", 400);
+          this.triggerToast("n8n Workflow Simulation Complete!");
+        } catch (err) {
+          console.error(err);
+          await pushLog("❌ [Error] Integration workflow failed. Check API configuration or payload formats.", 200);
+          this.state.simStep = 0;
+        } finally {
+          this.state.isSimulating = false;
+          this.render();
+        }
+      },
+
+      sendChat: async function(predefinedText = null) {
+        const chatInputNode = document.getElementById('chatInputNode');
+        const textToSend = predefinedText || (chatInputNode ? chatInputNode.value : '');
+        
+        if (!textToSend.trim()) return;
+
+        this.state.chatMessages.push({ sender: 'user', text: textToSend });
+        this.state.chatInput = '';
+        this.state.isChatLoading = true;
+        this.render();
+
+        const systemPrompt = `You are an expert Wunder Mobility Implementation Manager and AI Integration Consultant. You are onboarding a mid-sized European operator launching 800 e-bikes with Yadea IoT smart locks across 3 cities. Keep answers tactical.`;
+
+        try {
+          if (!this.state.apiKey) {
+            setTimeout(() => {
+              this.state.chatMessages.push({ sender: 'assistant', text: `Please ensure your API Key is entered in the settings to generate dynamic responses. In the meantime, I recommend reviewing the App Store submission prerequisites!` });
+              this.state.isChatLoading = false;
+              this.render();
+            }, 1200);
+          } else {
+            const result = await this.generateGeminiContent(textToSend, systemPrompt);
+            const replyText = result.candidates?.[0]?.content?.parts?.[0]?.text || "No reply from AI.";
+            this.state.chatMessages.push({ sender: 'assistant', text: replyText });
+            this.state.isChatLoading = false;
+            this.render();
+          }
+        } catch (err) {
+          this.state.chatMessages.push({ sender: 'assistant', text: "Error connecting to Gemini API." });
+          this.state.isChatLoading = false;
+          this.render();
+        }
+      },
+
+      // --- RENDERING LOGIC ---
+      render: function() {
+        // Save focus states before overriding DOM
+        const payloadInput = document.getElementById('payloadInput');
+        if (payloadInput && this.state.activeTab === 'automation') {
+           this.state.inputPayload = payloadInput.value;
+        }
+        
+        const chatInputNode = document.getElementById('chatInputNode');
+        if(chatInputNode && this.state.activeTab === 'advisor') {
+           this.state.chatInput = chatInputNode.value;
+        }
+
+        const root = document.getElementById('app-root');
+        root.innerHTML = this.getAppHTML();
+        
+        // Re-initialize Lucide Icons after DOM injection
+        lucide.createIcons();
+
+        // Restore focus states & scroll
+        if (this.state.activeTab === 'advisor') {
+           const newChatInputNode = document.getElementById('chatInputNode');
+           if (newChatInputNode) {
+             newChatInputNode.value = this.state.chatInput;
+             newChatInputNode.focus();
+           }
+           const chatContainer = document.getElementById('chatContainer');
+           if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+      },
+
+      getAppHTML: function() {
+        return `
+          ${this.getToastHTML()}
+          ${this.getModalHTML()}
+          ${this.getHeaderHTML()}
+          <div class="flex-1 flex flex-col md:flex-row">
+            ${this.getSidebarHTML()}
+            <main class="flex-1 bg-[#0b0f19] p-6 lg:p-8 overflow-y-auto">
+              ${this.state.activeTab === 'dashboard' ? this.getDashboardHTML() : ''}
+              ${this.state.activeTab === 'tracker' ? this.getTrackerHTML() : ''}
+              ${this.state.activeTab === 'automation' ? this.getAutomationHTML() : ''}
+              ${this.state.activeTab === 'advisor' ? this.getAdvisorHTML() : ''}
+            </main>
+          </div>
+          <footer class="border-t border-slate-800 bg-slate-950/60 p-4 text-center text-[10px] text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4 px-6">
+            <div>© 2026 Wunder Mobility. Systems Sandbox Deployment Workspace.</div>
+          </footer>
+        `;
+      },
+
+      getToastHTML: function() {
+        if (!this.state.toastMessage) return '';
+        return `
+          <div class="fixed bottom-6 right-6 z-50 bg-indigo-600 border border-indigo-400/20 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-slide-up">
+            <i data-lucide="sparkles" class="h-5 w-5 text-indigo-200 animate-pulse"></i>
+            <span class="font-medium text-sm">${this.state.toastMessage}</span>
+          </div>
+        `;
+      },
+
+      getModalHTML: function() {
+        if (!this.state.isApiKeyModalOpen) return '';
+        return `
+          <div class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl animate-scale-up">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="p-2 bg-indigo-500/10 text-indigo-400 rounded-lg">
+                  <i data-lucide="settings" class="h-6 w-6"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-100">Connect Your Real Gemini API</h3>
+              </div>
+              <p class="text-xs text-slate-400 mb-4 leading-relaxed">
+                Drop your Google Gemini API key below to switch the <strong>n8n Studio and Launch Advisor</strong> from simulated mockups into a live playground executing live parsing and localization tasks in real-time.
+              </p>
+              <input 
+                id="api-key-input"
+                type="password"
+                placeholder="AIzaSy..."
+                value="${this.state.apiKey}"
+                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-all text-sm mb-6 font-mono"
+              />
+              <div class="flex justify-end gap-3">
+                <button onclick="app.toggleApiKeyModal(false)" class="px-4 py-2 text-xs text-slate-400 hover:text-slate-200 font-medium transition-colors">
+                  Close
+                </button>
+                <button onclick="app.saveApiKey()" class="bg-indigo-600 hover:bg-indigo-500 px-4 py-2 text-xs text-white font-medium rounded-xl transition-colors shadow-lg shadow-indigo-600/20">
+                  Save & Connect
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      },
+
+      getHeaderHTML: function() {
+        return `
+          <header class="border-b border-slate-800 bg-slate-900/40 backdrop-blur-md sticky top-0 z-40 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="bg-indigo-600 text-white p-2.5 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-600/30">
+                <i data-lucide="activity" class="h-6 w-6"></i>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-semibold uppercase tracking-wider text-indigo-400">Implementation Portal</span>
+                  <span class="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/20">Active</span>
+                </div>
+                <h1 class="text-xl font-extrabold text-slate-100 tracking-tight">VeloGo 3-City Launch Hub</h1>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="hidden lg:flex items-center gap-6 border-l border-slate-800 pl-6 text-xs text-slate-400">
+                <div>
+                  <div class="text-slate-500 font-medium">Operator Fleet</div>
+                  <div class="font-semibold text-slate-200">800 Yadea e-Bikes</div>
+                </div>
+                <div>
+                  <div class="text-slate-500 font-medium">Launch Cities</div>
+                  <div class="font-semibold text-slate-200">Rotterdam • Hamburg • Copenhagen</div>
+                </div>
+              </div>
+              <button 
+                onclick="app.toggleApiKeyModal(true)"
+                class="flex items-center gap-2 px-3.5 py-2 text-xs rounded-xl font-semibold border transition-all ${
+                  this.state.apiKey ? 'bg-emerald-600/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-600/20' : 'bg-slate-800/80 text-slate-300 border-slate-700/80 hover:bg-slate-800'
+                }"
+              >
+                <i data-lucide="settings" class="h-3.5 w-3.5"></i>
+                ${this.state.apiKey ? 'API Connected' : 'Config Live API Key'}
+              </button>
+            </div>
+          </header>
+        `;
+      },
+
+      getSidebarHTML: function() {
+        const getTabClass = (tabName) => this.state.activeTab === tabName 
+          ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/15' 
+          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50';
+
+        return `
+          <aside class="w-full md:w-64 border-r border-slate-800 bg-slate-900/20 p-4 flex flex-col gap-2">
+            <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-widest px-3 mb-2">Modules</p>
+            
+            <button onclick="app.setTab('dashboard')" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all ${getTabClass('dashboard')}">
+              <i data-lucide="sliders" class="h-4 w-4"></i> Dashboard Hub
+            </button>
+            <button onclick="app.setTab('tracker')" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all ${getTabClass('tracker')}">
+              <i data-lucide="check-circle-2" class="h-4 w-4"></i> Onboarding Tracker
+            </button>
+            <button onclick="app.setTab('automation')" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all ${getTabClass('automation')}">
+              <i data-lucide="cpu" class="h-4 w-4 ${this.state.activeTab === 'automation' ? 'text-indigo-400' : ''}"></i> n8n Workflow Studio
+            </button>
+            <button onclick="app.setTab('advisor')" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all ${getTabClass('advisor')}">
+              <i data-lucide="sparkles" class="h-4 w-4"></i> Gemini Launch Advisor
+            </button>
+          </aside>
+        `;
+      },
+
+      getDashboardHTML: function() {
+        return `
+          <div class="space-y-8 max-w-6xl">
+            <div class="relative bg-gradient-to-r from-indigo-900/30 via-slate-900 to-slate-900 rounded-3xl border border-indigo-500/20 p-6 lg:p-8 overflow-hidden">
+              <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-600/5 rounded-full blur-3xl pointer-events-none"></div>
+              <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div>
+                  <span class="bg-indigo-500/20 text-indigo-300 text-xs font-bold px-3 py-1 rounded-full border border-indigo-400/20">Wunder Partner Workspace</span>
+                  <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-100 tracking-tight mt-2.5">Welcome, VeloGo Europe!</h2>
+                  <p class="text-slate-400 text-sm mt-2 max-w-xl leading-relaxed">
+                    This space is your dedicated launch portal for scaling your 800-bike deployment across Hamburg, Copenhagen, and Rotterdam.
+                  </p>
+                </div>
+                <button onclick="app.setTab('tracker')" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-3 rounded-xl transition-all shadow-lg shadow-indigo-600/20 flex items-center gap-2">
+                  View Roadmaps <i data-lucide="arrow-right" class="h-4 w-4"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                <span class="text-slate-500 text-xs font-bold uppercase tracking-wider">Overall Integration</span>
+                <div class="flex items-center gap-4 mt-3">
+                  <span class="text-2xl font-extrabold text-slate-100">20%</span>
+                  <span class="text-xs text-indigo-400 font-medium">Stage 1 Active</span>
+                </div>
+                <p class="text-slate-500 text-[11px] mt-2">White-label asset gathering underway; staging server deployment completed.</p>
+              </div>
+
+              <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                <span class="text-slate-500 text-xs font-bold uppercase tracking-wider">Active Deployments</span>
+                <div class="space-y-1.5 mt-3">
+                  <div class="flex justify-between text-xs text-slate-300"><span class="font-semibold">Rotterdam, NL</span><span>300 e-Bikes</span></div>
+                  <div class="flex justify-between text-xs text-slate-300"><span class="font-semibold">Hamburg, DE</span><span>300 e-Bikes</span></div>
+                  <div class="flex justify-between text-xs text-slate-300"><span class="font-semibold">Copenhagen, DK</span><span>200 e-Bikes</span></div>
+                </div>
+              </div>
+
+              <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                <span class="text-slate-500 text-xs font-bold uppercase tracking-wider">n8n Automation Engine</span>
+                <div class="flex items-center gap-2 mt-3 text-emerald-400 text-sm font-semibold">
+                  <i data-lucide="check" class="h-4 w-4"></i> Ready to Integrate
+                </div>
+                <p class="text-slate-500 text-[11px] mt-2">Zero-code pipelines save 14+ manual administrative hours per city each week.</p>
+              </div>
+            </div>
+          </div>
+        `;
+      },
+
+      getTrackerHTML: function() {
+        const completedCount = this.state.tasks.filter(t => t.status === 'completed').length;
+        const inProgressCount = this.state.tasks.filter(t => t.status === 'in-progress').length;
+        const pendingCount = this.state.tasks.filter(t => t.status === 'pending').length;
+
+        const weeks = ['Weeks 1-2', 'Weeks 3-4', 'Weeks 5-6', 'Weeks 7-8', 'Weeks 9-10'];
+        
+        const tasksHTML = weeks.map(weekStr => {
+          const weekTasks = this.state.tasks.filter(t => t.week === weekStr);
+          if (weekTasks.length === 0) return '';
+          
+          const weekTasksHTML = weekTasks.map(task => `
+            <div class="bg-slate-900 border transition-all rounded-xl overflow-hidden ${this.state.expandedTask === task.id ? 'border-indigo-500/50 shadow-lg shadow-indigo-500/5' : 'border-slate-800 hover:border-slate-700'}">
+              <div class="p-4 flex flex-wrap items-center justify-between gap-4 cursor-pointer" onclick="app.toggleTaskExpand(${task.id})">
+                <div class="flex items-center gap-3">
+                  <button 
+                    onclick="event.stopPropagation(); app.toggleTaskStatus(${task.id});"
+                    class="h-5 w-5 rounded-full flex items-center justify-center border transition-all ${
+                      task.status === 'completed' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500' : 
+                      task.status === 'in-progress' ? 'bg-amber-500/20 text-amber-500 border-amber-500' : 'border-slate-700 hover:border-indigo-500/50'
+                    }"
+                  >
+                    ${task.status === 'completed' ? '<span class="text-[10px] font-bold">✓</span>' : ''}
+                    ${task.status === 'in-progress' ? '<span class="text-[10px] font-bold">/</span>' : ''}
+                  </button>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-semibold text-slate-200">${task.title}</span>
+                      <span class="text-[9px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded-md font-medium">${task.category}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 ml-8">
+                  <span class="text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full border ${this.getStatusColor(task.status)}">
+                    ${task.status.replace('-', ' ')}
+                  </span>
+                  <i data-lucide="${this.state.expandedTask === task.id ? 'chevron-up' : 'chevron-down'}" class="h-4 w-4 text-slate-500"></i>
+                </div>
+              </div>
+              ${this.state.expandedTask === task.id ? `
+                <div class="bg-slate-950/60 border-t border-slate-800 p-4 text-xs text-slate-400 space-y-3 leading-relaxed">
+                  <p>${task.description}</p>
+                  <div class="flex gap-4 pt-2 text-[10px] text-slate-500">
+                    <div><span class="font-bold text-slate-400">Lead Owner:</span> ${task.owner}</div>
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          `).join('');
+
+          return `
+            <div class="space-y-2">
+              <div class="text-xs font-bold text-slate-400 uppercase tracking-widest pl-2 mb-2">${weekStr}</div>
+              <div class="space-y-3">${weekTasksHTML}</div>
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <div class="space-y-6 max-w-5xl">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+              <div>
+                <h2 class="text-2xl font-bold text-slate-100 flex items-center gap-2">
+                  <i data-lucide="check-circle-2" class="h-6 w-6 text-indigo-500"></i>
+                  Onboarding Roadmaps
+                </h2>
+                <p class="text-slate-400 text-xs mt-1">Track task status, delivery owners, and milestone progressions through Go-Live and Launch.</p>
+              </div>
+              <div class="flex gap-2">
+                <span class="bg-emerald-500/10 text-emerald-400 text-[11px] font-bold px-3 py-1 rounded-full border border-emerald-500/20 flex items-center gap-1.5">
+                  <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>${completedCount} Completed
+                </span>
+                <span class="bg-amber-500/10 text-amber-400 text-[11px] font-bold px-3 py-1 rounded-full border border-amber-500/20 flex items-center gap-1.5">
+                  <span class="h-1.5 w-1.5 rounded-full bg-amber-400"></span>${inProgressCount} In Progress
+                </span>
+                <span class="bg-slate-800 text-slate-400 text-[11px] font-bold px-3 py-1 rounded-full border border-slate-700 flex items-center gap-1.5">
+                  <span class="h-1.5 w-1.5 rounded-full bg-slate-500"></span>${pendingCount} Pending
+                </span>
+              </div>
+            </div>
+            <div class="space-y-4">${tasksHTML}</div>
+          </div>
+        `;
+      },
+
+      getAutomationHTML: function() {
+        const scenarioKeys = Object.keys(this.state.scenarios);
+        const activeScenario = this.state.scenarios[this.state.selectedScenario];
+
+        const scenarioButtonsHTML = scenarioKeys.map(key => {
+          const s = this.state.scenarios[key];
+          const isSelected = this.state.selectedScenario === key;
+          return `
+            <button onclick="app.setScenario('${key}')" class="p-5 rounded-2xl border text-left transition-all ${isSelected ? 'bg-indigo-600/10 border-indigo-500 shadow-lg shadow-indigo-500/5 ring-1 ring-indigo-500/30' : 'bg-slate-900 border-slate-800 hover:border-slate-700'}">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-slate-100">${s.title}</span>
+                <i data-lucide="activity" class="h-4 w-4 ${isSelected ? 'text-indigo-400' : 'text-slate-600'}"></i>
+              </div>
+              <p class="text-[11px] text-slate-400 leading-relaxed">${s.description}</p>
+            </button>
+          `;
+        }).join('');
+
+        const logsHTML = this.state.simLogs.map(log => `<div class="text-[10px] text-indigo-300">↳ ${log.text}</div>`).join('');
+
+        return `
+          <div class="space-y-6 max-w-6xl">
+            <div class="border-b border-slate-800 pb-5">
+              <h2 class="text-2xl font-bold text-slate-100 flex items-center gap-2">
+                <i data-lucide="cpu" class="h-6 w-6 text-indigo-500 animate-pulse"></i>
+                n8n + Gemini Automation Studio
+              </h2>
+              <p class="text-slate-400 text-xs mt-1">
+                How does it work? Select one of the three real-world operation pipelines below. You can edit the raw input on the left, click <strong>"Execute Workflow"</strong>, and see the exact JSON payload the n8n-Gemini integration generates on the right.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">${scenarioButtonsHTML}</div>
+
+            <!-- Workflow Visualizer -->
+            <div class="bg-slate-950 border border-slate-800/80 rounded-2xl p-6 relative">
+              <div class="absolute top-2 right-3 text-[10px] font-mono text-slate-600 uppercase tracking-widest select-none">n8n Workflow Engine</div>
+              <div class="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-4 relative py-6">
+                
+                <!-- Trigger Node -->
+                <div class="relative p-4 rounded-xl border-2 transition-all w-full lg:w-64 text-center ${this.state.simStep >= 1 ? 'border-emerald-500 bg-emerald-500/5' : 'border-slate-800 bg-slate-900'}">
+                  <div class="absolute -top-3 left-4 bg-slate-950 px-2 text-[10px] text-slate-500 uppercase tracking-wider font-mono">Trigger Node</div>
+                  <div class="h-8 w-8 bg-indigo-500/10 text-indigo-400 rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="terminal" class="h-4 w-4"></i>
+                  </div>
+                  <span class="text-[11px] font-bold text-slate-200 block">${activeScenario.triggerLabel}</span>
+                  <span class="text-[9px] text-slate-500 block mt-1">Accepts incoming data streams</span>
+                  ${this.state.simStep >= 1 ? '<div class="absolute -bottom-2.5 left-1/2 transform -translate-x-1/2 bg-emerald-500 text-slate-950 text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1"><i data-lucide="check" class="h-2.5 w-2.5"></i> Executed</div>' : ''}
+                </div>
+
+                <div class="hidden lg:block h-0.5 w-12 transition-all ${this.state.simStep >= 2 ? 'bg-emerald-500' : 'bg-slate-800'}"></div>
+
+                <!-- Gemini Node -->
+                <div class="relative p-4 rounded-xl border-2 transition-all w-full lg:w-72 text-center ${this.state.simStep >= 2 ? 'border-emerald-500 bg-emerald-500/5 shadow-md' : 'border-slate-800 bg-slate-900'} ${this.state.simStep === 2 ? 'ring-2 ring-indigo-500/50 animate-pulse' : ''}">
+                  <div class="absolute -top-3 left-4 bg-slate-950 px-2 text-[10px] text-indigo-400 uppercase tracking-wider font-mono flex items-center gap-1">
+                    <i data-lucide="sparkles" class="h-3 w-3"></i> Gemini Node
+                  </div>
+                  <div class="h-8 w-8 bg-indigo-500/10 text-indigo-400 rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="sparkles" class="h-4 w-4 text-indigo-400"></i>
+                  </div>
+                  <span class="text-[11px] font-bold text-slate-200 block">${activeScenario.geminiLabel}</span>
+                  <span class="text-[9px] text-slate-500 block mt-1">Translates raw input into structured JSON</span>
+                  ${this.state.simStep >= 3 ? '<div class="absolute -bottom-2.5 left-1/2 transform -translate-x-1/2 bg-emerald-500 text-slate-950 text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1"><i data-lucide="check" class="h-2.5 w-2.5"></i> Processed</div>' : ''}
+                </div>
+
+                <div class="hidden lg:block h-0.5 w-12 transition-all ${this.state.simStep >= 3 ? 'bg-emerald-500' : 'bg-slate-800'}"></div>
+
+                <!-- Action Node -->
+                <div class="relative p-4 rounded-xl border-2 transition-all w-full lg:w-64 text-center ${this.state.simStep >= 3 ? 'border-emerald-500 bg-emerald-500/5' : 'border-slate-800 bg-slate-900'}">
+                  <div class="absolute -top-3 left-4 bg-slate-950 px-2 text-[10px] text-slate-500 uppercase tracking-wider font-mono">Action Node</div>
+                  <div class="h-8 w-8 bg-indigo-500/10 text-indigo-400 rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="database" class="h-4 w-4"></i>
+                  </div>
+                  <span class="text-[11px] font-bold text-slate-200 block">${activeScenario.actionLabel}</span>
+                  <span class="text-[9px] text-slate-500 block mt-1">Pushes variables into Wunder server</span>
+                  ${this.state.simStep >= 4 ? '<div class="absolute -bottom-2.5 left-1/2 transform -translate-x-1/2 bg-emerald-500 text-slate-950 text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1"><i data-lucide="check" class="h-2.5 w-2.5"></i> Synchronized</div>' : ''}
+                </div>
+              </div>
+
+              <div class="mt-6 flex justify-center">
+                <button onclick="app.runSimulation()" ${this.state.isSimulating ? 'disabled' : ''} class="bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-800 text-white text-xs font-bold py-3 px-6 rounded-xl transition-all shadow-lg flex items-center gap-2">
+                  ${this.state.isSimulating ? `
+                    <i data-lucide="refresh-cw" class="h-3.5 w-3.5 animate-spin"></i>
+                    Running Pipeline Simulation...
+                  ` : `
+                    <i data-lucide="play" class="h-3.5 w-3.5"></i>
+                    Execute Workflow Pipeline
+                  `}
+                </button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <!-- Input -->
+              <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
+                <div>
+                  <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2.5">Raw Input (Incoming E-Mail, Log, or Form)</h4>
+                  <textarea id="payloadInput" ${this.state.isSimulating ? 'disabled' : ''} class="w-full bg-slate-950 border border-slate-800 text-slate-300 font-mono text-[11px] leading-relaxed p-4 rounded-xl focus:outline-none focus:border-indigo-500 transition-colors h-[220px]">${this.state.inputPayload}</textarea>
+                </div>
+                <p class="text-[10px] text-slate-500 leading-relaxed mt-3">
+                  You can edit the text box above before running the simulation to see how Gemini successfully parses your customized edits.
+                </p>
+              </div>
+
+              <!-- Output -->
+              <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between mb-2.5">
+                    <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Output: Generated Wunder Schema (JSON)</h4>
+                    ${this.state.simResult ? `<button onclick="app.copySimResult()" class="text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1 text-[11px] font-semibold"><i data-lucide="copy" class="h-3 w-3"></i> Copy JSON</button>` : ''}
+                  </div>
+
+                  <div class="h-[220px] bg-slate-950 border border-slate-800 rounded-xl p-4 overflow-auto font-mono text-[11px]">
+                    ${this.state.isSimulating && this.state.simStep < 4 ? `
+                      <div class="text-slate-500 italic space-y-2">
+                        <div>🔄 Streaming logs:</div>
+                        ${logsHTML}
+                      </div>
+                    ` : this.state.simResult ? `
+                      <pre class="text-emerald-400">${JSON.stringify(this.state.simResult, null, 2)}</pre>
+                    ` : `
+                      <div class="text-slate-600 italic text-center pt-16">
+                        Click "Execute Workflow Pipeline" to see structured JSON outputs here...
+                      </div>
+                    `}
+                  </div>
+                </div>
+                <p class="text-[10px] text-slate-500 leading-relaxed mt-3">
+                  This generated structured JSON payload maps directly to database variables inside Wunder API endpoints, bypassing any administrative intervention.
+                </p>
+              </div>
+            </div>
+          </div>
+        `;
+      },
+
+      getAdvisorHTML: function() {
+        const messagesHTML = this.state.chatMessages.map(msg => `
+          <div class="flex flex-col max-w-[85%] ${msg.sender === 'user' ? 'self-end items-end' : 'self-start items-start'}">
+            <span class="text-[9px] text-slate-500 font-bold mb-1">
+              ${msg.sender === 'user' ? 'VeloGo Project Team' : 'Wunder AI Advisor'}
+            </span>
+            <div class="p-3.5 rounded-2xl text-xs leading-relaxed whitespace-pre-wrap ${msg.sender === 'user' ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-slate-950 text-slate-300 border border-slate-800 rounded-tl-none'}">${msg.text}</div>
+          </div>
+        `).join('');
+
+        const loaderHTML = this.state.isChatLoading ? `
+          <div class="self-start flex flex-col max-w-[85%]">
+            <span class="text-[9px] text-slate-500 font-bold mb-1">Wunder AI Advisor</span>
+            <div class="bg-slate-950 text-slate-500 border border-slate-800 p-3 rounded-2xl rounded-tl-none text-xs flex items-center gap-2.5">
+              <i data-lucide="refresh-cw" class="h-3.5 w-3.5 animate-spin text-indigo-400"></i>
+              Analyzing queries against Wunder API specs...
+            </div>
+          </div>
+        ` : '';
+
+        return `
+          <div class="space-y-6 max-w-5xl flex flex-col h-[calc(100vh-140px)]">
+            <div class="border-b border-slate-800 pb-4">
+              <h2 class="text-2xl font-bold text-slate-100 flex items-center gap-2">
+                <i data-lucide="sparkles" class="h-6 w-6 text-indigo-400"></i>
+                Gemini Launch Advisor
+              </h2>
+              <p class="text-slate-400 text-xs mt-1">Ask questions regarding GBFS/MDS structures, Wunder API formats, payment settings, or custom localizing.</p>
+            </div>
+
+            <div id="chatContainer" class="flex-1 bg-slate-900 border border-slate-800 rounded-2xl p-4 overflow-y-auto space-y-4 flex flex-col min-h-[300px]">
+              ${messagesHTML}
+              ${loaderHTML}
+            </div>
+
+            <div class="flex gap-2">
+              <input 
+                id="chatInputNode"
+                type="text"
+                placeholder="Ask a question..."
+                onkeydown="if(event.key === 'Enter') app.sendChat()"
+                class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-100 focus:outline-none focus:border-indigo-500 transition-colors"
+              />
+              <button onclick="app.sendChat()" ${this.state.isChatLoading ? 'disabled' : ''} class="bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-800 text-white px-4 py-3 rounded-xl transition-colors flex items-center justify-center shadow-lg">
+                <i data-lucide="send" class="h-4 w-4"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+    };
+
+    // Initialize the app when the DOM loads
+    document.addEventListener("DOMContentLoaded", () => {
+      app.init();
+    });
+  </script>
 </body>
 </html>
