@@ -48,6 +48,22 @@
         apiKey: '',
         toastMessage: null,
         expandedTask: null,
+
+        // Client Configuration (Populated from Questionnaire)
+        clientConfig: {
+          city1: 'Rotterdam',
+          bikeCount1: 300,
+          city2: 'Hamburg',
+          bikeCount2: 300,
+          city3: 'Copenhagen',
+          bikeCount3: 200,
+          goLiveDate: '2026-07-01',
+          paymentMethod: 'Stripe',
+          geofencesDefined: 'no',
+          primaryLanguage: 'German, Dutch, Danish',
+          opsContact: 'Operations Lead',
+          constraints: ''
+        },
         
         // Simulation State
         selectedScenario: 'policy',
@@ -59,18 +75,18 @@
         
         // Chat State
         chatMessages: [
-          { sender: 'assistant', text: "Hello! I am your Wunder Launch Onboarding Assistant, backed by Gemini. I can assist you with setting up your 800 e-bikes, configuring GBFS/MDS feeds, localizing copy, or structuring your n8n workflow integrations. Ask me anything!" }
+          { sender: 'assistant', text: "Hello! I am your Wunder Launch Onboarding Assistant, backed by Gemini. I can assist you with setting up your e-bikes, configuring feeds, localizing copy, or structuring your workflow integrations. Ask me anything!" }
         ],
         chatInput: '',
         isChatLoading: false,
 
         // Tasks Data
         tasks: [
-          { id: 1, week: 'Weeks 1-2', category: 'Strategy', title: 'Initialize Wunder Staging Environment', owner: 'Wunder CSM', status: 'completed', description: 'Deploy VeloGo sandbox instances and map administrative users.' },
-          { id: 2, week: 'Weeks 1-2', category: 'Hardware', title: 'Collect Yadea IoT Specifications & IMEI lists', owner: 'Client Team', status: 'completed', description: 'Gather SIM card details and IoT telemetry protocol specs for 800 e-bikes.' },
+          { id: 1, week: 'Weeks 1-2', category: 'Strategy', title: 'Initialize Wunder Staging Environment', owner: 'Wunder CSM', status: 'completed', description: 'Deploy sandbox instances and map administrative users.' },
+          { id: 2, week: 'Weeks 1-2', category: 'Hardware', title: 'Collect Yadea IoT Specifications & IMEI lists', owner: 'Client Team', status: 'completed', description: 'Gather SIM card details and IoT telemetry protocol specs for the fleet.' },
           { id: 3, week: 'Weeks 1-2', category: 'Design', title: 'Submit White-Label App Design Assets', owner: 'Client Team', status: 'in-progress', description: 'Upload customized brand color hex-codes, logos, App Store/Google Play icon templates.' },
-          { id: 4, week: 'Weeks 3-4', category: 'Integrations', title: 'Stripe Gateway & Merchant Onboarding', owner: 'Client Team', status: 'pending', description: 'Configure dynamic local processing structures for EUR and DKK transactions.' },
-          { id: 5, week: 'Weeks 3-4', category: 'Regulatory', title: 'Establish GBFS & MDS API Endpoints', owner: 'Wunder CSM', status: 'pending', description: 'Build compliant feeds required for municipal permits in Hamburg, Rotterdam, and Copenhagen.' },
+          { id: 4, week: 'Weeks 3-4', category: 'Integrations', title: 'Stripe Gateway & Merchant Onboarding', owner: 'Client Team', status: 'pending', description: 'Configure dynamic local processing structures for transaction processing.' },
+          { id: 5, week: 'Weeks 3-4', category: 'Regulatory', title: 'Establish GBFS & MDS API Endpoints', owner: 'Wunder CSM', status: 'pending', description: 'Build compliant feeds required for municipal permits in Rotterdam, Hamburg, and Copenhagen.' },
           { id: 6, week: 'Weeks 5-6', category: 'Regulatory', title: 'Load City-specific Geofence Databases', owner: 'Wunder CSM', status: 'pending', description: 'Inject mandatory parking clusters, slow-riding corridors, and excluded zones.' },
           { id: 7, week: 'Weeks 5-6', category: 'Localization', title: 'App Copy Localization (German, Dutch, Danish)', owner: 'Client Team', status: 'pending', description: 'Translate system copy, push notifications, and ride-end legal notices.' },
           { id: 8, week: 'Weeks 7-8', category: 'Hardware', title: 'OTA Firmware Validation & Remote Unlock Tests', owner: 'Joint Team', status: 'pending', description: 'Conduct over-the-air test loops to ensure reliable wake/sleep/lock states.' },
@@ -81,7 +97,7 @@
         // Scenarios Data
         scenarios: {
           policy: {
-            title: "Automated Speed Zone Setup",
+            title: "Municipal Policy Geofencer",
             description: "Automate speed limits and slow-zones by feeding raw municipal legal PDFs directly to Gemini, bypassing manual GPS plotting.",
             triggerLabel: "Incoming Council PDF Webhook",
             geminiLabel: "Extract Coordinates & GeoJSON Schema",
@@ -105,8 +121,8 @@
             }
           },
           localization: {
-            title: "One-Click Multi-Language Localization",
-            description: "Instantly translate user-facing copy into German, Dutch, and Danish. Ensures micromobility terms like 'battery swap' or 'lock-to bar' translate correctly, not literally.",
+            title: "Contextual Multi-City Localizer",
+            description: "Instantly translate user-facing copy. Ensures micromobility terms like 'battery swap' or 'lock-to bar' translate correctly, not literally.",
             triggerLabel: "Google Sheets Copy Update Webhook",
             geminiLabel: "Contextual Mobility Translator",
             actionLabel: "POST /v1/localization/batch",
@@ -118,7 +134,7 @@
             }
           },
           telemetry: {
-            title: "Smart Bike Health Monitoring",
+            title: "IoT Anomaly Diagnostics Coordinator",
             description: "Scans low-signal bike diagnostics, diagnoses root issues via Gemini (e.g. GPS shield vs dead cell), and auto-assigns local repair task sheets.",
             triggerLabel: "Wunder Raw Telemetry Log Hook",
             geminiLabel: "Gemini IoT Diagnostic Engine",
@@ -328,7 +344,7 @@
         this.state.isChatLoading = true;
         this.render();
 
-        const systemPrompt = `You are an expert Wunder Mobility Implementation Manager and AI Integration Consultant. You are onboarding a mid-sized European operator launching 800 e-bikes with Yadea IoT smart locks across 3 cities. Keep answers tactical.`;
+        const systemPrompt = `You are an expert Wunder Mobility Implementation Manager and AI Integration Consultant. You are onboarding a mid-sized operator launching e-bikes. Keep answers tactical.`;
 
         try {
           if (!this.state.apiKey) {
@@ -349,6 +365,62 @@
           this.state.isChatLoading = false;
           this.render();
         }
+      },
+
+      generateTimelineFromForm: function() {
+        // Read values from form
+        const q_city1 = document.getElementById('q_city1').value || 'City 1';
+        const q_city2 = document.getElementById('q_city2').value || 'City 2';
+        const q_city3 = document.getElementById('q_city3').value || 'City 3';
+        
+        const q_bikes1 = parseInt(document.getElementById('q_bikes1').value) || 0;
+        const q_bikes2 = parseInt(document.getElementById('q_bikes2').value) || 0;
+        const q_bikes3 = parseInt(document.getElementById('q_bikes3').value) || 0;
+        
+        const q_date = document.getElementById('q_date').value;
+        const q_payment = document.getElementById('q_payment').value;
+        const q_geofence = document.getElementById('q_geofence').value;
+        const q_lang = document.getElementById('q_lang').value;
+        const q_contact = document.getElementById('q_contact').value;
+        const q_constraints = document.getElementById('q_constraints').value;
+
+        // Update Global State Config
+        this.state.clientConfig = {
+          city1: q_city1,
+          city2: q_city2,
+          city3: q_city3,
+          bikeCount1: q_bikes1,
+          bikeCount2: q_bikes2,
+          bikeCount3: q_bikes3,
+          goLiveDate: q_date,
+          paymentMethod: q_payment,
+          geofencesDefined: q_geofence,
+          primaryLanguage: q_lang,
+          opsContact: q_contact,
+          constraints: q_constraints
+        };
+
+        // Dynamically update the specific tasks in the tracker
+        const updatedTasks = this.state.tasks.map(task => {
+          if(task.id === 4) {
+            return { ...task, title: `${q_payment} Gateway & Merchant Onboarding` };
+          }
+          if(task.id === 5) {
+            return { ...task, description: `Build compliant feeds required for municipal permits in ${q_city1}, ${q_city2}, and ${q_city3}.` };
+          }
+          if(task.id === 7) {
+            return { ...task, title: `App Copy Localization (${q_lang})` };
+          }
+          if(task.id === 10) {
+            return { ...task, title: `${q_city1} Soft Launch (100 e-Bikes)` };
+          }
+          return task;
+        });
+        this.state.tasks = updatedTasks;
+
+        // Switch back to dashboard and notify user
+        this.state.activeTab = 'dashboard';
+        this.triggerToast("Launch Timeline & Custom Dashboard Generated!");
       },
 
       // --- RENDERING LOGIC ---
@@ -394,10 +466,11 @@
               ${this.state.activeTab === 'tracker' ? this.getTrackerHTML() : ''}
               ${this.state.activeTab === 'automation' ? this.getAutomationHTML() : ''}
               ${this.state.activeTab === 'advisor' ? this.getAdvisorHTML() : ''}
+              ${this.state.activeTab === 'questionnaire' ? this.getQuestionnaireHTML() : ''}
             </main>
           </div>
           <footer class="border-t border-slate-800 bg-slate-950/60 p-4 text-center text-[10px] text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4 px-6">
-            <div>© 2026 Wunder Mobility. Systems Sandbox Deployment Workspace.</div>
+            <div>© 2026 Wunder Mobility | Client Implementation Portal | Questions? Contact your Wunder CSM at [cta@wundermobility.com].</div>
           </footer>
         `;
       },
@@ -447,6 +520,8 @@
       },
 
       getHeaderHTML: function() {
+        const totalBikes = this.state.clientConfig.bikeCount1 + this.state.clientConfig.bikeCount2 + this.state.clientConfig.bikeCount3;
+        const config = this.state.clientConfig;
         return `
           <header class="border-b border-slate-800 bg-slate-900/40 backdrop-blur-md sticky top-0 z-40 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center gap-3">
@@ -465,11 +540,11 @@
               <div class="hidden lg:flex items-center gap-6 border-l border-slate-800 pl-6 text-xs text-slate-400">
                 <div>
                   <div class="text-slate-500 font-medium">Operator Fleet</div>
-                  <div class="font-semibold text-slate-200">800 Yadea e-Bikes</div>
+                  <div class="font-semibold text-slate-200">${totalBikes > 0 ? totalBikes : 800} Yadea e-Bikes</div>
                 </div>
                 <div>
                   <div class="text-slate-500 font-medium">Launch Cities</div>
-                  <div class="font-semibold text-slate-200">Rotterdam • Hamburg • Copenhagen</div>
+                  <div class="font-semibold text-slate-200">${config.city1} • ${config.city2} • ${config.city3}</div>
                 </div>
               </div>
               <button 
@@ -495,6 +570,10 @@
           <aside class="w-full md:w-64 border-r border-slate-800 bg-slate-900/20 p-4 flex flex-col gap-2">
             <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-widest px-3 mb-2">Modules</p>
             
+            <button onclick="app.setTab('questionnaire')" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all ${getTabClass('questionnaire')}">
+              <i data-lucide="clipboard-edit" class="h-4 w-4"></i> Let's Customize
+            </button>
+            <div class="my-1 border-t border-slate-800/50 mx-2"></div>
             <button onclick="app.setTab('dashboard')" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all ${getTabClass('dashboard')}">
               <i data-lucide="sliders" class="h-4 w-4"></i> Dashboard Hub
             </button>
@@ -511,7 +590,105 @@
         `;
       },
 
+      getQuestionnaireHTML: function() {
+        const config = this.state.clientConfig;
+        return `
+          <div class="space-y-6 w-full max-w-3xl mx-auto animate-fade-in">
+            <div class="border-b border-slate-800 pb-5">
+              <h2 class="text-2xl font-bold text-slate-100 flex items-center gap-2">
+                <i data-lucide="clipboard-edit" class="h-6 w-6 text-indigo-500"></i>
+                Let's Customize This For You
+              </h2>
+              <p class="text-slate-400 text-xs mt-1">We know every operator is unique. Fill out these quick details so we can tailor your Week 1 implementation timeline, API payloads, and automation pipelines specifically to your fleet.</p>
+            </div>
+
+            <form onsubmit="event.preventDefault(); app.generateTimelineFromForm();" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-8">
+              
+              <!-- 1. Cities & Bikes Grid -->
+              <div>
+                <h3 class="text-sm font-bold text-slate-200 mb-4 border-b border-slate-800 pb-2">1 & 2. Fleet & Location Distribution</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div class="space-y-2">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">City 1</label>
+                    <input id="q_city1" type="text" value="${config.city1}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500" required>
+                    <input id="q_bikes1" type="number" value="${config.bikeCount1}" placeholder="Bike Count" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500" required>
+                  </div>
+                  <div class="space-y-2">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">City 2</label>
+                    <input id="q_city2" type="text" value="${config.city2}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500" required>
+                    <input id="q_bikes2" type="number" value="${config.bikeCount2}" placeholder="Bike Count" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500" required>
+                  </div>
+                  <div class="space-y-2">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">City 3</label>
+                    <input id="q_city3" type="text" value="${config.city3}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500" required>
+                    <input id="q_bikes3" type="number" value="${config.bikeCount3}" placeholder="Bike Count" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500" required>
+                  </div>
+                </div>
+              </div>
+
+              <!-- General Settings -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <div class="space-y-2">
+                  <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">3. Target Go-Live Date</label>
+                  <input id="q_date" type="date" value="${config.goLiveDate}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500" required>
+                </div>
+                
+                <div class="space-y-2">
+                  <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">4. Primary Payment Gateway</label>
+                  <select id="q_payment" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+                    <option value="Stripe" ${config.paymentMethod === 'Stripe' ? 'selected' : ''}>Stripe</option>
+                    <option value="PayPal" ${config.paymentMethod === 'PayPal' ? 'selected' : ''}>PayPal</option>
+                    <option value="Local Card Network" ${config.paymentMethod === 'Local Card Network' ? 'selected' : ''}>Local Card Network</option>
+                  </select>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">5. Geofence Zones Pre-Defined?</label>
+                  <select id="q_geofence" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+                    <option value="yes" ${config.geofencesDefined === 'yes' ? 'selected' : ''}>Yes, we have KML/JSON files</option>
+                    <option value="no" ${config.geofencesDefined === 'no' ? 'selected' : ''}>No, we need help mapping them</option>
+                  </select>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">6. Primary App Language(s)</label>
+                  <select id="q_lang" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+                    <option value="German, Dutch, Danish" ${config.primaryLanguage === 'German, Dutch, Danish' ? 'selected' : ''}>German, Dutch, Danish</option>
+                    <option value="English Only" ${config.primaryLanguage === 'English Only' ? 'selected' : ''}>English Only</option>
+                    <option value="Spanish, French" ${config.primaryLanguage === 'Spanish, French' ? 'selected' : ''}>Spanish, French</option>
+                    <option value="German, Polish" ${config.primaryLanguage === 'German, Polish' ? 'selected' : ''}>German, Polish</option>
+                  </select>
+                </div>
+
+              </div>
+
+              <!-- Ops / Constraints -->
+              <div class="space-y-4">
+                <div class="space-y-2">
+                  <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">7. Primary Operations Contact (Name/Role)</label>
+                  <input id="q_contact" type="text" placeholder="e.g., Jane Doe - Regional Fleet Manager" value="${config.opsContact}" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500" required>
+                </div>
+                
+                <div class="space-y-2">
+                  <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">8. Specific Risks or Regulatory Constraints?</label>
+                  <textarea id="q_constraints" placeholder="e.g., Amsterdam requires a specific micro-mobility hardware permit before deploying..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 min-h-[80px]">${config.constraints}</textarea>
+                </div>
+              </div>
+
+              <div class="pt-4 border-t border-slate-800 flex justify-end">
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold py-3 px-6 rounded-xl transition-all shadow-lg shadow-indigo-600/20 flex items-center gap-2">
+                  <i data-lucide="settings-2" class="h-4 w-4"></i> Generate Custom Timeline
+                </button>
+              </div>
+
+            </form>
+          </div>
+        `;
+      },
+
       getDashboardHTML: function() {
+        const config = this.state.clientConfig;
         return `
           <div class="space-y-8 w-full max-w-[1600px] mx-auto">
             <div class="relative bg-gradient-to-r from-indigo-900/30 via-slate-900 to-slate-900 rounded-3xl border border-indigo-500/20 p-6 lg:p-8 overflow-hidden">
@@ -521,7 +698,7 @@
                   <span class="bg-indigo-500/20 text-indigo-300 text-xs font-bold px-3 py-1 rounded-full border border-indigo-400/20">Wunder Partner Workspace</span>
                   <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-100 tracking-tight mt-2.5">Welcome, VeloGo Europe!</h2>
                   <p class="text-slate-400 text-sm mt-2 max-w-xl leading-relaxed">
-                    This space is your dedicated launch portal for scaling your 800-bike deployment across Hamburg, Copenhagen, and Rotterdam.
+                    This space is your dedicated launch portal for scaling your e-bike deployment across ${config.city1}, ${config.city2}, and ${config.city3}.
                   </p>
                 </div>
                 <button onclick="app.setTab('tracker')" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-3 rounded-xl transition-all shadow-lg shadow-indigo-600/20 flex items-center gap-2">
@@ -543,9 +720,9 @@
               <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
                 <span class="text-slate-500 text-xs font-bold uppercase tracking-wider">Active Deployments</span>
                 <div class="space-y-1.5 mt-3">
-                  <div class="flex justify-between text-xs text-slate-300"><span class="font-semibold">Rotterdam, NL</span><span>300 e-Bikes</span></div>
-                  <div class="flex justify-between text-xs text-slate-300"><span class="font-semibold">Hamburg, DE</span><span>300 e-Bikes</span></div>
-                  <div class="flex justify-between text-xs text-slate-300"><span class="font-semibold">Copenhagen, DK</span><span>200 e-Bikes</span></div>
+                  <div class="flex justify-between text-xs text-slate-300"><span class="font-semibold">${config.city1}</span><span>${config.bikeCount1} e-Bikes</span></div>
+                  <div class="flex justify-between text-xs text-slate-300"><span class="font-semibold">${config.city2}</span><span>${config.bikeCount2} e-Bikes</span></div>
+                  <div class="flex justify-between text-xs text-slate-300"><span class="font-semibold">${config.city3}</span><span>${config.bikeCount3} e-Bikes</span></div>
                 </div>
               </div>
 
@@ -561,7 +738,7 @@
             <div class="mt-8">
               <h3 class="text-lg font-bold text-slate-100 mb-6 flex items-center gap-2">
                 <i data-lucide="target" class="h-5 w-5 text-indigo-400"></i>
-                What You Get in Week 1
+                What You Get Week 1
               </h3>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
@@ -850,7 +1027,8 @@
                 <i data-lucide="sparkles" class="h-6 w-6 text-indigo-400"></i>
                 Gemini Launch Advisor
               </h2>
-              <p class="text-slate-400 text-xs mt-1">Ask questions regarding GBFS/MDS structures, Wunder API formats, payment settings, or custom localizing.</p>
+              <p class="text-slate-400 text-xs mt-1">Have questions during implementation? Ask here. This AI advisor has been trained on Wunder's implementation playbook and can answer questions  
+              about timelines, API requirements, payment setup, localization, and go-live planning.  It's available 24/7. For urgent issues, ping your Wunder CSM directly</p>
             </div>
 
             <div id="chatContainer" class="flex-1 bg-slate-900 border border-slate-800 rounded-2xl p-4 overflow-y-auto space-y-4 flex flex-col min-h-[300px]">
