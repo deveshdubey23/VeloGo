@@ -421,7 +421,7 @@
                 <div class="p-2 bg-indigo-500/10 text-indigo-400 rounded-lg">
                   <i data-lucide="settings" class="h-6 w-6"></i>
                 </div>
-                <h3 class="text-lg font-bold text-slate-100">Connect Your Gemini API</h3>
+                <h3 class="text-lg font-bold text-slate-100">Connect Your Real Gemini API</h3>
               </div>
               <p class="text-xs text-slate-400 mb-4 leading-relaxed">
                 Drop your Google Gemini API key below to switch the <strong>n8n Studio and Launch Advisor</strong> from simulated mockups into a live playground executing live parsing and localization tasks in real-time.
@@ -513,7 +513,7 @@
 
       getDashboardHTML: function() {
         return `
-          <div class="space-y-8 max-w-6xl">
+          <div class="space-y-8 w-full max-w-[1600px] mx-auto">
             <div class="relative bg-gradient-to-r from-indigo-900/30 via-slate-900 to-slate-900 rounded-3xl border border-indigo-500/20 p-6 lg:p-8 overflow-hidden">
               <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-600/5 rounded-full blur-3xl pointer-events-none"></div>
               <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -620,7 +620,7 @@
         }).join('');
 
         return `
-          <div class="space-y-6 max-w-5xl">
+          <div class="space-y-6 w-full max-w-[1600px] mx-auto">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
               <div>
                 <h2 class="text-2xl font-bold text-slate-100 flex items-center gap-2">
@@ -667,7 +667,7 @@
         const logsHTML = this.state.simLogs.map(log => `<div class="text-[10px] text-indigo-300">↳ ${log.text}</div>`).join('');
 
         return `
-          <div class="space-y-6 max-w-6xl">
+          <div class="space-y-6 w-full max-w-[1600px] mx-auto">
             <div class="border-b border-slate-800 pb-5">
               <h2 class="text-2xl font-bold text-slate-100 flex items-center gap-2">
                 <i data-lucide="cpu" class="h-6 w-6 text-indigo-500 animate-pulse"></i>
@@ -803,7 +803,7 @@
         ` : '';
 
         return `
-          <div class="space-y-6 max-w-5xl flex flex-col h-[calc(100vh-140px)]">
+          <div class="space-y-6 w-full max-w-[1600px] mx-auto flex flex-col h-[calc(100vh-140px)]">
             <div class="border-b border-slate-800 pb-4">
               <h2 class="text-2xl font-bold text-slate-100 flex items-center gap-2">
                 <i data-lucide="sparkles" class="h-6 w-6 text-indigo-400"></i>
